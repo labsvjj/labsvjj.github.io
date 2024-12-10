@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Ruta4D</title></head>
+<body>
+<svg id="panel4d" viewBox="0 0 512 512" preserveAspectRatio="none" style="outline: #C0C0C0FF solid 1px; position: absolute; left: 0px; top: 0px; width: 512px; height: 512px;"></svg>
+<script>
+var puntos = [], minx = [], miny = [], maxx = [], maxy = [], radio = [];
+var anchobal = 16 , contador = 0;
+var xmin = 0, ymin = 0, xmax = 512, ymax = 512, zmin = 0, zmax = 256, tmin = 0, tmax = 16;
+var dy = anchobal*2, dx = anchobal*2, dz = 1, dt = 1;
+var z = anchobal, x = xmax-z, y = ymax-z,  t = 16;
+var focox = ((xmax - xmin) / 2) + xmin, focoy = ((ymax - ymin) / 2) + ymin;
+matriz4d(); 
+grilla4d(); 
+//cubo4d(x,y,z,t,contador);
+if (window.addEventListener) {document.addEventListener('keydown', teclas, false);} else {document.onkeydown = teclas;}
+function teclas(e) {e = window.event || e; tecla(e.keyCode);}
+function tecla(k) {
+	if (k === 101) {contador++;}
+    if (k === 37 || k === 52 || k === 100)                          {x=x-dx;}
+    if (k === 39 || k === 54 || k === 102)                          {x=x+dx;}
+    if (k === 38 || k === 56 || k === 104)                          {y=y-dy;}
+    if (k === 40 || k === 50 || k === 98)                           {y=y+dy;}
+    if (k === 36 || k === 55 || k === 103 || k === 73 || k === 111) {t=t-dt;}
+    if (k === 33 || k === 57 || k === 105 || k === 90 || k === 107) {z=z-dz;}
+    if (k === 34 || k === 51 || k === 99  || k === 84 || k === 109) {z=z+dz;}
+    if (k === 35 || k === 49 || k === 97  || k === 106)             {t=t+dt;}
+	if (t > tmax) { t = tmax; } ;
+	if (z > zmax) { z = zmax; } ;
+	if (z < zmin) { z = zmin; } ;
+	if (t < tmin) { t = tmin; } ;
+	if (x < (minx[t]+z)) { x = minx[t]+z; } ; 
+	if (x > (maxx[t]-z)) { x = maxx[t]-z; } ; 
+	if (y < (miny[t]+z)) { y = miny[t]+z; } ;
+	if (y > (maxy[t]-z)) { y = maxy[t]-z; } ;
+    //cubo4d(x,y,z,t,contador);
+}
+function cubo4d(j,k,l,m,i){
+	p0 = (j - l) + ',' + (k - l);	p1 = (j + l) + ',' + (k - l);     	p2 = (j + l) + ',' + (k + l);     	p3 = (j - l) + ',' + (k + l);
+	var i4 = p4d((j-l),(k-l),focox,focoy,(j+l),(k-l),0,focoy);
+	if(!i4.y5){
+		i4 = p4d((j-l),(k+l),focox,focoy,(j+l),(k+l),0,focoy);
+		p4 = i4.x5 + ',' + focoy;
+	} else {
+		p4 = i4.x5 + ',' + i4.y5;
+	}
+	
+	console.log("p4= " + p4);
+
+	var i5 = p4d((j+l),(k-l),focox,focoy,i4.x5,i4.y5,xmax,i4.y5);
+	if(!i5.y5){i5 = p4d((j-l),(k+l),focox,focoy,0,i4.y5,xmax,i4.y5);}    
+	sty = "stroke: lime ; fill: none; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;";
+	pts = (j-l) + ',' + (k+l) + ' ' + focox + ',' + focoy;
+	poli4d("linea1", pts, sty);
+	sty = "stroke: red ; fill: none; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;";
+	pts = 0 + ',' + i4.y5 + ' ' + xmax + ',' + i4.y5;
+	poli4d("linea2", pts, sty);
+	p5 = i5.x5 + ',' + i5.y5;	
+	console.log("p5= " + p5);
+	
+	
+	var i7 = p4d((j - l),(k + l),focox,focoy,(j + l),(k + l),0,focoy); 
+	p7 = i7.x5 + ',' + i7.y5;
+	console.log("p7= " + p7);
+	//if(!i7.x5){i7.x5=i4.x5}
+	//if(!i7.y5){i7.y5=i4.y5}
+	var i6 = p4d((j+l),(k+l),focox,focoy,0,i7.y5,xmax,i7.y5);   
+	p6 = i6.x5 + ',' + i6.y5;
+	console.log("p6= " + p6);
+
+
+	pruta= "M" +p0 + "L" + p1 + "L"  + p2 + "L" + p3 + "L" + p0 + "L" + p4 + "L" + p5 + "L" + p6 + "L" + p7 + "L" + p4 + "L" + p0 + "L" + p3 + "L" + p7 + "L" + p4 + "L" + p5 + "L" + p6 + "L" + p7 + "L" + p3 + "L" + p2 + "L" + p6 + "L" + p2 + "L" + p1 + "L" + p5 + "L" + p1 + "L" + p0;
+	var pcolorllena="#000000FF",pcolorborde = "#C0C0C0FF", grueso = "0.5";
+	ruta4d('cubo' + i, pruta, pcolorllena,  pcolorborde, grueso);
+}
+function grilla4d() {
+	var pcolorborde = "#FFFFFFFF", grueso = "0.5";
+	for (var i = 1; i <= anchobal; i++) {
+		radio[i] = maxx[i] - maxx[i - 1];
+		var palfa = parseInt(255*((i / anchobal)));
+		for (var j = 1; j <= anchobal; j++) {
+			P1 = puntos["X" +    i    + "Z" +    j   ][0] + "," + puntos["X" +    i    + "Z" +   j    ][1];
+			P2 = puntos["X" + (i - 1) + "Z" +    j   ][0] + "," + puntos["X" + (i - 1) + "Z" +   j    ][1];
+			P3 = puntos["X" + (i - 1) + "Z" + (j - 1)][0] + "," + puntos["X" + (i - 1) + "Z" + (j - 1)][1];
+			P4 = puntos["X" +    i    + "Z" + (j - 1)][0] + "," + puntos["X" +    i    + "Z" + (j - 1)][1];
+			ruta4d("Z" + i + "X" + j, 'M' + P1 + 'L' + P2 + 'L' + P3 + 'L' + P4 + 'L' + P1, rgbToHex(0,255,0,palfa),  pcolorborde, grueso);
+			P1 = puntos["T" +    i    + "Z" +    j   ][0] + "," + puntos["T" +    i    + "Z" +    j   ][1];
+			P2 = puntos["T" + (i - 1) + "Z" +    j   ][0] + "," + puntos["T" + (i - 1) + "Z" +    j   ][1];
+			P3 = puntos["T" + (i - 1) + "Z" + (j - 1)][0] + "," + puntos["T" + (i - 1) + "Z" + (j - 1)][1];
+			P4 = puntos["T" +    i    + "Z" + (j - 1)][0] + "," + puntos["T" +    i    + "Z" + (j - 1)][1];
+			ruta4d("T" + i + "X" + j, 'M' + P1 + 'L' + P2 + 'L' + P3 + 'L' + P4 + 'L' + P1, rgbToHex(0,255,255,palfa),  pcolorborde, grueso);
+			P1 = puntos["Y" +    i    + "Z" +    j   ][0] + "," + puntos["Y" +    i    + "Z" +    j   ][1];
+			P2 = puntos["Y" + (i - 1) + "Z" +    j   ][0] + "," + puntos["Y" + (i - 1) + "Z" +    j   ][1];
+			P3 = puntos["Y" + (i - 1) + "Z" + (j - 1)][0] + "," + puntos["Y" + (i - 1) + "Z" + (j - 1)][1];
+			P4 = puntos["Y" +    i    + "Z" + (j - 1)][0] + "," + puntos["Y" +    i    + "Z" + (j - 1)][1];
+			ruta4d("Z" + i + "Y" + (17-j), 'M' + P1 + 'L' + P2 + 'L' + P3 + 'L' + P4 + 'L' + P1, rgbToHex(255,165,0,palfa),  pcolorborde, grueso);
+			P1 = puntos["T" +    i    + "Y" +    j   ][0] + "," + puntos["T" +    i    + "Y" +    j   ][1];
+			P2 = puntos["T" + (i - 1) + "Y" +    j   ][0] + "," + puntos["T" + (i - 1) + "Y" +    j   ][1];
+			P3 = puntos["T" + (i - 1) + "Y" + (j - 1)][0] + "," + puntos["T" + (i - 1) + "Y" + (j - 1)][1];
+			P4 = puntos["T" +    i    + "Y" + (j - 1)][0] + "," + puntos["T" +    i    + "Y" + (j - 1)][1];
+			ruta4d("T" + i + "Y" + (17-j), 'M' + P1 + 'L' + P2 + 'L' + P3 + 'L' + P4 + 'L' + P1, rgbToHex(255,255,0,palfa),  pcolorborde, grueso);
+		}
+	}
+}
+function matriz4d() {
+	var ii = 0, paso  = xmax/anchobal, y2 = ymax/2;
+	var i1 = (p4d(xmax, ymax, xmin, y2, xmin, ymax, xmax, ymin));
+	var i1x = i1.x5, i1y = i1.y5;
+	var i2x = (xmax - i1x) + xmin, i2y = i1y;
+	var i3x = (xmax - i1x) + xmin, i3y = (ymax - i1y) + ymin;
+	var i4x = i1x, i4y = i3y;
+	for (var l = xmin; l <= xmax; l = l + paso) {
+		var i7 = (p4d(l, ymax, focox, focoy, i1x, i1y, xmax, i1y));
+		var i7x = i7.x5, i7y = i7.y5;
+		var i8 = (p4d(i4x, i4y, i4x, i1y, xmin, ymax - l, focox, focoy));
+		var i8x = i8.x5, i8y = i8.y5;
+		var i5 = (p4d(l, ymax, focox, focoy, xmax, ymax, xmin, y2));
+		var i5x = i5.x5, i5y = i5.y5;
+		var i6 = (p4d(xmin, ymax, focox, focoy, i5x, i5y, xmin, i5y));
+		var i6x = i6.x5, i6y = i6.y5;
+		var i9 = (p4d(i6x, i6y, xmax, i6y, xmax, ymax, focox, focoy));
+		var i9x = i9.x5, i9y = i9.y5;
+		var i10x = i9x , i10y = (ymax - i9y) + ymin;
+		var i11x = i6x , i11y = (ymax - i6y) + ymin;
+		minx[ii] = i11x;		miny[ii] = i11y;		maxx[ii] = i9x;		maxy[ii] = i9y;
+		var j = 0, pxanterior = 0;
+		for (var m = xmax; m >= xmin; m = m - paso) {
+			var XZ = (p4d(i6x, i6y, xmax, i6y, (xmax - m), ymax, focox, focoy));
+			puntos['X' + ii + 'Z' + j] = [XZ.x5, XZ.y5];
+			var TZ = (p4d(i10x, i10y, xmin, i10y, (xmax - m), ymin, focox, focoy));
+			puntos['T' + ii + 'Z' + j] = [TZ.x5, TZ.y5];
+			var YZ = (p4d(i6x, i6y, i6x, ymin, xmin, (ymax - m), focox, focoy));
+			puntos['Y' + ii + 'Z' + j] = [YZ.x5, YZ.y5];
+			var TY = (p4d(i9x, i9y, i9x, ymin, xmax, (ymax - m), focox, focoy));
+			puntos['T' + ii + 'Y' + j] = [TY.x5, TY.y5];
+			j++;
+		}
+		ii++;
+	}
+}
+function p4d(x1, y1, x2, y2, x3, y3, x4, y4) {var divisor = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)); if (divisor === 0) { return { x5: NaN, y5: NaN }; } var x5 = x1 + ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / divisor * (x2 - x1); var y5 = y1 + ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / divisor * (y2 - y1); return { x5: x5, y5: y5 }; }
+function componentToHex(c) {var hex = c.toString(16);return hex.length == 1 ? "0" + hex : hex;}
+function rgbToHex(r, g, b, a) {return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b) + componentToHex(a);}
+function circ4d(pid, pcx, pcy, pra, sty) { if (!isNaN(pcx) && !isNaN(pcy)) { var o4d; if (document.getElementById(pid)) { o4d = document.getElementById(pid); } else { o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid); } o4d.setAttribute('cx', pcx); o4d.setAttribute('cy', pcy); if (pra && pra != "NaN") {o4d.setAttribute('r', pra); }if (sty !== ' ') { o4d.setAttribute('style', sty); } if (!document.getElementById(pid)) { document.getElementById('panel4d').appendChild(o4d); } } }
+function ruta4d(name, pathData, fillColor, strokeColor, strokeWidth) { if (pathData.indexOf("undefined") < 0 && pathData.indexOf("NaN") < 0) { var o4d; if (document.getElementById(name)) { o4d = document.getElementById(name); } else { o4d = document.createElementNS("http://www.w3.org/2000/svg", "path"); o4d.setAttribute("id", name);	o4d.setAttribute("stroke-linecap", "round");} o4d.setAttribute("d", pathData); if (fillColor !== " ") { o4d.setAttribute("fill", fillColor); } if (strokeWidth !== " ") { o4d.setAttribute("stroke-width", strokeWidth); }if (strokeColor !== " ") { o4d.setAttribute("stroke", strokeColor); } if (!document.getElementById(name)) { document.getElementById("panel4d").appendChild(o4d);  }}} 
+function poli4d(pid, pts, sty) { if (pts.indexOf("undefined") < 0 && pts.indexOf("NaN") < 0) { var o4d; if (document.getElementById(pid)) { o4d = document.getElementById(pid); } else { o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); o4d.setAttribute("id", pid); o4d.setAttribute("shape-rendering", "geometricPrecision"); } o4d.setAttribute("points", pts); if (sty !== " ") { o4d.setAttribute("style", sty); } if (!document.getElementById(pid)) { document.getElementById("panel4d").appendChild(o4d); } } }
+</script>
+</body>
+</html>
