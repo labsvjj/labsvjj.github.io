@@ -42,56 +42,36 @@ function ruedamapa(e) {
 	currentViewBox = viewBoxes[currentViewBoxIndex]; 
 	document.getElementById("mapa").setAttribute('viewBox', currentViewBox.join(' '));
 }
-	
-callapi4d("Todo4D.html");
-	
-function callapi4d(objeto) {
-	theUrl = objeto;
+
+callmapa("/ToDo4D.html");
+
+function callmapa(objeto) {
+	theUrl = '.' + objeto;
 	var xmlHttp = new XMLHttpRequest();
 	xmlHttp.onreadystatechange = function () {
 		if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-			AnalizaXML(xmlHttp.responseText);
+			dibujamapa(xmlHttp.responseText);
+			coordenadas();
+			ubica();
 		}
 	}; xmlHttp.open("GET", theUrl, true);
 	xmlHttp.send(null);
 }
-function AnalizaXML(xmlDoc) {
-    arregloXML(xmlDoc);
-    dibujaXML();
-}
-function arregloXML(rta) {
+function dibujamapa(rta) {
     parser = new DOMParser();
     xmlDoc = parser.parseFromString(rta, "text/xml");
     var tg = xmlDoc.getElementsByTagName("svg")[0].childNodes;
-    var objetos = (fila4d.length);
     for (i = 0; i < tg.length; i++) {
         if (tg[i]) {
-            fila4d[i + objetos] = i + "|" + "checked|" + tg[i].nodeName + "|" + tg[i].getAttribute('id') + "|";
             if (tg[i].nodeName === "polyline") {
-                fila4d[i + objetos] += " | |" + tg[i].getAttribute('points') + "|";
+                poli4dm('mapa', tg[i].id, tg[i].getAttribute('points'),  tg[i].getAttribute('style'));
             }
             if (tg[i].nodeName === "circle") {
-                fila4d[i + objetos] += tg[i].getAttribute('cx') + "|" + tg[i].getAttribute('cy') + "|" + tg[i].getAttribute('r') + "|";
-            }
+                circ4dm('mapa', tg[i].id, tg[i].getAttribute('cx'), tg[i].getAttribute('cy'), tg[i].getAttribute('r'), tg[i].getAttribute('style'));
+              }
             if (tg[i].nodeName === "text") {
-                fila4d[i + objetos] += tg[i].getAttribute('x') + "|" + tg[i].getAttribute('y') + "|" + tg[i].textContent + "|";
+		        text4dm('mapa', tg[i].id, tg[i].getAttribute('x'), tg[i].getAttribute('y'), tg[i].getAttribute('style'), tg[i].textContent);
             }
-            fila4d[i + objetos] += tg[i].getAttribute('style');
-        }
-    }
-}
-function dibujaXML() {
-    var array;
-    for (i = 0; i < fila4d.length; i++) {
-        array = fila4d[i].split("|");
-        if (array[2] === "polyline") {
-            poli4d(array[3], array[6], array[7]);
-        }
-        if (array[2] === "circle") {
-            circ4d(array[3], array[4], array[5], array[6], array[7]);
-        }
-        if (array[2] === "text") {
-            text4d(array[3], array[4], array[5], array[7], array[6]);
         }
     }
 }
@@ -135,10 +115,6 @@ function coordenadas(){
 		text4dm('mapa', 'mtm' + l, -75.24, (l-0.001).toFixed(3), styt, (-l).toFixed(2));	
 	}
 }
-function poli4d(pid, pts, sty) {if (pts.indexOf("undefined")<0 && pts.indexOf("NaN")<0){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); o4d.setAttribute("id", pid); o4d.setAttribute("shape-rendering", "geometricPrecision"); } o4d.setAttribute("points", pts);                                                                                       if (sty !== " ") {o4d.setAttribute("style", sty);}                       if (!document.getElementById(pid)) {document.getElementById("panel4d").appendChild(o4d);}}}
-function circ4d(pid, pcx, pcy, pra, sty){if (!isNaN(pcx) && !isNaN(pcy)){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');  o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid);} o4d.setAttribute('cx', pcx);	o4d.setAttribute('cy', pcy); o4d.setAttribute('r', pra);	                            if (sty !== ' ') {o4d.setAttribute('style', sty);}	                     if (!document.getElementById(pid)) {document.getElementById('panel4d').appendChild(o4d);}}}
-function elip4d(pid, pcx, pcy, prx, pry, sty)                                          {var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse'); o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid);} o4d.setAttribute('cx', pcx);	o4d.setAttribute('cy', pcy); o4d.setAttribute('rx', prx); o4d.setAttribute('ry', pry);	if (sty !== ' ') {o4d.setAttribute('style', sty);}	                     if (!document.getElementById(pid)) {document.getElementById('panel4d').appendChild(o4d);}}
-function text4d(pid, px, py, sty, txt)                                                 {var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "text");    o4d.setAttribute("shape-rendering", "geometricPrecision"); o4d.setAttribute("id", pid);} o4d.setAttribute("x", px);   o4d.setAttribute("y", py);                                                                if (sty !== " ") {o4d.setAttribute("style", sty);} o4d.textContent = txt;o4d.setAttribute("alignment-baseline", "middle");o4d.setAttribute("text-anchor", "middle");if (!document.getElementById(pid)) {document.getElementById("panel4d").appendChild(o4d);}}
 function poli4dm(panel, pid, pts, sty) {    if (pts.indexOf("undefined")<0 && pts.indexOf("NaN")<0){        var o4d;         if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline");         o4d.setAttribute("id", pid);         o4d.setAttribute("shape-rendering", "geometricPrecision"); }         o4d.setAttribute("points", pts);                                                                                               if (sty !== " ") {o4d.setAttribute("style", sty);}                               if (!document.getElementById(pid)) {document.getElementById(panel).appendChild(o4d);}    }}
 function circ4dm(panel, pid, pcx, pcy, pra, sty){if (!isNaN(pcx) && !isNaN(pcy)){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');  o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid);} o4d.setAttribute('cx', pcx);	o4d.setAttribute('cy', pcy); o4d.setAttribute('r', pra);	                            if (sty !== ' ') {o4d.setAttribute('style', sty);}	                     if (!document.getElementById(pid)) {document.getElementById(panel).appendChild(o4d);}}}
 function elip4dm(panel, pid, pcx, pcy, prx, pry, sty)                                          {var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse'); o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid);} o4d.setAttribute('cx', pcx);	o4d.setAttribute('cy', pcy); o4d.setAttribute('rx', prx); o4d.setAttribute('ry', pry);	if (sty !== ' ') {o4d.setAttribute('style', sty);}	                     if (!document.getElementById(pid)) {document.getElementById(panel).appendChild(o4d);}}
