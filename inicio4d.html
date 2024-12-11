@@ -59,19 +59,7 @@ function AnalizaXML(xmlDoc) {
 }
 function arregloXML(rta) {
     parser = new DOMParser();
-	xmlDoc = parser.parseFromString(rta, "text/xml");
-	var ti = xmlDoc.getElementById("imagen");
-	imageObj.src = ti.getAttribute('src');
-    canvas4d.drawImage(imageObj, 0, 0, 512, 512, 0, 0, 512, 512);
-    canvas24d.drawImage(imageObj, 0, 0, 512, 512, 0, 0, 64, 64);
-	croping = "";
-    canvas1.style.left = "0px";
-    canvas1.style.top = "0px";
-    document.getElementById("im").remove();
-	document.getElementById('b1').remove();
-    document.getElementById('myCanvas4D').display = "block";
-    document.getElementById('panel4d').style.cursor = 'default';
-	
+    xmlDoc = parser.parseFromString(rta, "text/xml");
     var tg = xmlDoc.getElementsByTagName("svg")[0].childNodes;
     var objetos = (fila4d.length);
     for (i = 0; i < tg.length; i++) {
