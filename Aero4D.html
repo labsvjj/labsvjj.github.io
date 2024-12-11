@@ -1,0 +1,166 @@
+<html><head><title>Aero4D</title></head><body>
+    <script>
+    //punto4d[Latitud, Longitud, Altitud, Tiempo];
+    //Modem, Router, WIFI, PC
+    //Baterias, Inversor, Generador
+    //IA, Software, Modelos, DataSet, Train, Predict
+    var xmin =0, ymin=0, xmax=512, ymax=512, zmin= 0, zmax=256, tmin= 0, tmax=16, contador  = 0, focox = ((xmax-xmin)/2)+xmin, focoy = ((ymax-ymin)/2)+ymin;
+    var sty= 'fill: blue ; stroke: silver; stroke-width: 4; stroke-linecap: round;stroke-linejoin:  round;';
+    pruta = "256,256 286,256 286,286 256,260 256,256 226,256 226,286 256,260 256,256";
+    const centerX = 256;
+    const centerY = 256;
+    const radius = 64;
+    const speed = 1; 
+    let angle = 0;
+    var j=449, k=256, pts1="", pts2="";
+    var variables = ["Generación", "Viento", "Temperatura", "Ruido"] ;
+    var horas =["00","01","02","03","04","05","06","07","08","09","10","11","12","01","02","03","04","05","06","07","08","09","10","11","12"];
+    document.addEventListener("DOMContentLoaded", function(event) {
+        var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("id", "panel4d");
+        svg.setAttribute("preserveAspectRatio", "none");
+        svg.setAttribute("style", "display: block; width: 512px; height: 512px; position: absolute; left: 0; top: 0px;");
+        svg.setAttribute("viewBox", "0 0 512 512");
+        document.body.appendChild(svg);
+
+        let defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        let radialGradient = document.createElementNS('http://www.w3.org/2000/svg', 'radialGradient');
+        radialGradient.setAttribute('id', 'grad1');
+        radialGradient.setAttribute('cx', '40%');
+        radialGradient.setAttribute('cy', '70%');
+        radialGradient.setAttribute('r', '50%');
+        radialGradient.setAttribute('fx', '50%');
+        radialGradient.setAttribute('fy', '75%');
+        radialGradient.setAttribute('spreadMethod', 'reflect');
+
+        let stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop1.setAttribute('offset', '0%');
+        stop1.setAttribute('stop-color', 'white');
+
+        let stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop2.setAttribute('offset', '100%');
+        stop2.setAttribute('stop-color', 'black');
+
+        radialGradient.appendChild(stop1);
+        radialGradient.appendChild(stop2);
+        defs.appendChild(radialGradient);
+        svg.appendChild(defs);
+        panel();
+    });
+    window.addEventListener('resize', function (event) {panel();});
+    function panel() {
+        grid4d(32, 441);
+        textos();
+        botones();
+        coordenadas();
+        aero4d();
+        animate();
+        ancho = Math.max(document.documentElement.clientWidth,  window.innerWidth);
+        alto  = Math.max(document.documentElement.clientHeight, window.innerHeight)-2; 
+        if (ancho > alto) { lado = alto; } else { lado = ancho; }
+        document.getElementById('panel4d').setAttribute('style', 'position:absolute; left: 0; top: 0; width:' + ancho + 'px;height:' + alto + 'px;');
+    }
+    function botones(){
+        sty ="cursor: pointer; cursor: hand;  stroke: black; fill: rgba(255,255,255,0.1); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;";
+        var y1=-64, y2=0;
+        for(var pid=96; pid<=98; pid++){
+            y1=y1+64; y2=y2+64; 
+            pts = "0," + y1 + " 64," + y1 + " 64," + y2 + " 0," + y2 + " 0," + y1;
+            poli4d(pid, pts, sty);
+        }
+    }
+    function textos(){
+        sty  = "fill: black;  stroke: none;  stroke-width: 1; font-family:monospace; font-size:10px";
+        sty1 = 'fill: yellow; stroke: black; font-family: Verdana;font-size:20px';
+        text4d(variables[0], 2, 10, sty, variables[0]);
+        text4d('voltaje', 4, 40, sty1, '24 V');
+        text4d(variables[1], 4, 84, sty, variables[1]);
+        text4d('velocidad', 1, 104, sty1, '30k/h');
+        text4d(variables[2], 1, 140, sty, variables[2]);
+        text4d('temperatura', 1, 174, sty1, '21°C');
+    }
+    function coordenadas(){
+        var hora= 0;
+        sty = "fill: none; stroke: black; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;";
+        styt = "fill: black; stroke: none; stroke-width: 1; font-family:monospace; font-size:9px";
+        for (var l= 80; l<=448; l= l + 15){
+            pts = l +",12" + " " + l +",192";
+            poli4d('l' + l, pts, sty); 
+            text4d('t' + l, (l-5), 10, styt, horas[hora]);
+            hora=hora + 1;
+        }
+        for (var l= 0; l<= 192; l= l + 64){
+            pts = "80," + l + " " + "440," + l;
+            poli4d('m' + l, pts, sty); 
+            text4d('tm' + l, 75, l, styt, "0");
+        }
+    }    
+    function grid4d(paso, y2){ 
+        var sty ='fill: rgba(0,0,0,0.10) ; stroke: silver; stroke-width: 0.5; stroke-linecap: round; stroke-linejoin: round;'; 
+        var i1  = (p4d(xmax, ymax, xmin, y2, xmin, ymax, xmax, ymin));  var i1x = i1.x5, i1y=i1.y5; 
+        var i2x = (xmax - i1x)+xmin, i2y = i1y; 
+        var i3x = (xmax - i1x)+xmin, i3y = (ymax - i1y)+ymin; 
+        var i4x = i1x , i4y = i3y; 
+        for (var l = xmin ; l <= xmax; l = l + paso ) {
+            var i7 = (p4d(l, ymax, focox, focoy, i1x, i1y, xmax, i1y)); 
+            var i7x = i7.x5, i7y=i7.y5; 
+            var i8 = (p4d(i4x, i4y, i4x, i1y, xmin, l, focox, focoy)); 
+            var i8x = i8.x5, i8y=i8.y5
+            var i5 = (p4d(l, ymax, focox, focoy, xmax, ymax, xmin, y2)); 
+            var i5x = i5.x5, i5y=i5.y5;
+            var i6 = (p4d(xmin, ymax, focox, focoy, i5x, i5y, xmin, i5y)); 
+            var i6x = i6.x5, i6y=i6.y5;
+            var i9 = (p4d(i6x, i6y, xmax, i6y, xmax, ymax, focox, focoy)); 
+            var i9x = i9.x5, i9y=i9.y5; 
+            var i10x = i9x, i10y = (ymax - i9y)+ymin; 
+            var i11x = i6x, i11y = (ymax - i6y)+ymin; 
+            pts = l + ',' + ymax + ' ' + i7x + ',' + i7y; poli4d('_vb' + l, pts, sty); 
+            pts = l + ',' + ymin + ' ' + i7x + ',' + i4y; poli4d('_vt' + l, pts, sty); 
+            pts = xmin + ',' + l + ' ' + i4x + ',' + i8y; poli4d('_hl' + l, pts, sty); 
+            pts = i7y + ',' + i8y + ' ' + xmax + ',' + l; poli4d('_hr' + l, pts, sty); 
+            pts = i9x + ',' + i9y + ' ' + i10x + ',' + i10y + ' ' + i11x + ',' + i11y + ' ' + i6x + ',' + i6y + ' ' + i9x + ',' + i9y; poli4d('_cc' + l, pts, sty); 
+        }
+    }
+    function aero4d(){
+        var a=1, b=(2.5), mint= -1.5, maxt = 5, pruta='';
+        for(var t=mint;t<=maxt; t=t+0.01){
+            x = a * (1 - Math.sin(t)) * Math.cos(t);
+            y = -b * (Math.sin(t)-1);
+            x=x*(50) + 256; y =y*(50)+256;
+            pruta += x + ',' + y + ' '; 
+        }
+        sty='fill: url(#grad1) ; stroke: black; stroke-width: 1; stroke-linecap: round;stroke-linejoin:  round;';
+        poli4d('gota4d', pruta, sty);
+    }  
+    function animate() {
+        sty='fill: blue ; stroke: black; stroke-width: 1; stroke-linecap: round;stroke-linejoin:  round;';       
+        var x = centerX + radius * Math.cos(angle);
+        var y = centerY + radius * Math.sin(angle);
+        pruta = "256,256 " + x +",236 " + (x) +",360 256,260 256,256 ";
+        poli4d('alabe', pruta, sty);	
+        angle += speed;
+        j=j+3; 
+        sty='fill: none ; stroke: yellow; stroke-width: 1; stroke-linecap: round;stroke-linejoin:  round;'; 
+        if (j > 423) {j=64; pts1="";pts2="";}
+        k= parseInt(Math.random() * (64) + 64);
+        pts1= pts1 + (j+16) +"," + (y/5) +" ";
+        poli4d('linea1', pts1, sty);
+        k= parseInt(Math.random() * (512 - 448) + 64);
+        pts2= pts2 + (j+16) +"," + k +" ";
+        poli4d('linea2', pts2, sty);
+        var registro = new Date();
+        var tiempo = ('0' + registro.getHours()).slice(-2) + ':' + ('0' + registro.getMinutes()).slice(-2) + ':' +  ('0' + registro.getSeconds()).slice(-2);
+        var instante =   ('00' + registro.getMilliseconds()).slice(-3);
+        text4d('reloj',   256, 500  ,'fill: yellow; stroke:  #000000 ;font-family: Arial;font-size:40px',tiempo);                 
+        text4d('milis',   470, 500  ,'fill: yellow; stroke:  #000000 ;font-family: Arial;font-size:20px',instante); 
+        requestAnimationFrame(animate);
+    }
+    function p4d(x1, y1, x2, y2, x3, y3, x4, y4){ var divisor = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)); if(divisor === 0){ return { x5: NaN , y5: NaN }; } var x5 = x1 + ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / divisor * (x2 - x1);      var y5 = y1 + ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / divisor * (y2 - y1);    return { x5: x5, y5: y5 }; }
+    function poli4d(pid, pts, sty) {if (pts.indexOf("undefined")<0 && pts.indexOf("NaN")<0){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); o4d.setAttribute("id", pid); o4d.setAttribute("shape-rendering", "geometricPrecision"); } o4d.setAttribute("points", pts);                                                                                       if (sty !== " ") {o4d.setAttribute("style", sty);}                       if (!document.getElementById(pid)) {document.getElementById("panel4d").appendChild(o4d);}}}
+    function circ4d(pid, pcx, pcy, pra, sty){if (!isNaN(pcx) && !isNaN(pcy)){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');  o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid);} o4d.setAttribute('cx', pcx);	o4d.setAttribute('cy', pcy); o4d.setAttribute('r', pra);	                            if (sty !== ' ') {o4d.setAttribute('style', sty);}	                     if (!document.getElementById(pid)) {document.getElementById('panel4d').appendChild(o4d);}}}
+    function elip4d(pid, pcx, pcy, prx, pry, sty)                                          {var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse'); o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid);} o4d.setAttribute('cx', pcx);	o4d.setAttribute('cy', pcy); o4d.setAttribute('rx', prx); o4d.setAttribute('ry', pry);	if (sty !== ' ') {o4d.setAttribute('style', sty);}	                     if (!document.getElementById(pid)) {document.getElementById('panel4d').appendChild(o4d);}}
+    function text4d(pid, px, py, sty, txt)                                                 {var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "text");    o4d.setAttribute("shape-rendering", "geometricPrecision"); o4d.setAttribute("id", pid);} o4d.setAttribute("x", px);   o4d.setAttribute("y", py);                                                                if (sty !== " ") {o4d.setAttribute("style", sty);} o4d.textContent = txt;if (!document.getElementById(pid)) {document.getElementById("panel4d").appendChild(o4d);}}
+    function numeroconcomas(numero) {var parts = numero.toString().split("."); parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");	return parts.join(".");}
+    </script>
+    </body>
+    </html>
