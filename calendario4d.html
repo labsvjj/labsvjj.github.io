@@ -1,0 +1,214 @@
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Calendario4D</title>
+<meta http-equiv = "Expires"      content = "Tue, 25 Abr 1990 09:30:00 -0700">
+<meta http-equiv = "Content-Type" content = "text/html; charset=UTF-8">
+<meta name = "keywords"           content = "Calendario Colombia">
+<meta name = "description"        content = "Festivos Colombia">
+<meta name = "Autor"              content = "labsvjj">
+<meta name = "Latitud"            content = "6.336830">
+<meta name = "Longitud"           content = "-75.601475">
+<meta name = "Altitud"            content = "2500.04">
+<meta name = "Momento"            content = "2024/12/11_10:34:00">
+<meta name = "Email"              content = "labsvjj@gmail.com">
+</head>
+<body>
+<svg id="panel4d"  preserveAspectRatio='none'  style="width: 512px; height: 512px; position: absolute; left: 0; top:  0px;" viewBox="0 0 512 512"></svg>
+<script>
+var titulo= [];
+var linea1=[],linea2=[],linea3=[],linea4=[],linea5=[],linea6=[];
+var adias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+var date = new Date();
+var panohoy = date.getFullYear();
+var pmeshoy = date.getMonth()+1;
+var hoy = date.getDate();
+window.addEventListener('load', function () {abrir(pmeshoy,panohoy);});
+async function abrir(mes,ano){
+  mes = "/mes?mes=" + mes + '&ano=' + ano;
+  const response = await fetch(mes);
+  const data = await response.json();
+
+  var inicia   = adias.indexOf(data.resultados[0].diasemana); 
+  var contador = 0;
+  titulo= [];
+  titulo[0]= data.resultados[0].mesano;
+  titulo[1]= data.resultados[0].ano;
+  titulo[2]= data.resultados[0].mes;
+  linea1=[],linea2=[],linea3=[],linea4=[],linea5=[],linea6=[];
+  for(var j=0; j<6; j++){
+    for(var i=0; i<7; i++){
+      var rta = "" ;
+      if((i+j*6)>=(inicia)){
+        if(data.resultados[contador] && data.resultados[contador].dia){
+          pnota='';if(data.resultados[contador].nota){pnota = ' ' + data.resultados[contador].nota;}
+          if(data.resultados[contador].festivo==1){rta = "*";}
+          rta = rta + data.resultados[contador].dia + pnota
+          contador++;
+        }
+      }
+      if(j==0){linea1[i]=rta;}
+      if(j==1){linea2[i]=rta;}
+      if(j==2){linea3[i]=rta;}
+      if(j==3){linea4[i]=rta;}
+      if(j==4){linea5[i]=rta;}
+      if(j==5){linea6[i]=rta;}
+    }
+    if(contador>=data.resultados.length){ break;}
+  }
+  tablero();
+}
+var caja = 512, lado = 512;
+var xmin =0, ymin=0, xmax=512, ymax=512, zmin= 0, zmax=16, tmin= 0, tmax=16, contador  = 0, focox = ((xmax-xmin)/2)+xmin, focoy = ((ymax-ymin)/2)+ymin;
+var x = 64, y = 64, z = 16 , tiempo= 0;
+window.onload=panel();
+window.addEventListener('resize', function (event) {panel();});
+function panel() {
+    ancho = Math.max(document.documentElement.clientWidth,  window.innerWidth);
+    alto  = Math.max(document.documentElement.clientHeight, window.innerHeight)-2; 
+    if (ancho > alto) { lado = alto; } else { lado = ancho; }
+    document.getElementById('panel4d').setAttribute('style', 'position:absolute; left: 0; top: 0; width:' + ancho + 'px;height:' + alto + 'px;');
+}
+function pulso() {
+    var registro = new Date();
+    var horas = registro.getHours();
+    var minutos = registro.getMinutes();
+    var segundos = registro.getSeconds();
+    var ampm = horas >= 12 ? 'PM' : 'AM';
+
+    horas = horas % 12;
+    horas = horas ? horas : 12; // la hora '0' debe ser '12'
+    minutos = minutos < 10 ? '0'+minutos : minutos;
+    segundos = segundos < 10 ? '0'+segundos : segundos;
+
+    var tiempo = horas + ':' + minutos + ':' + segundos + ' ' + ampm;
+    text4d('reloj', 256, 500, 'fill: yellow; stroke:  #000000 ;font-family: Arial;font-size:40px', tiempo);
+    
+    requestAnimationFrame(pulso);
+}
+
+async function tablero(){
+  document.getElementById('panel4d').innerHTML="";
+    //grid4d(73.14, 439);
+    grid4d(32, 341);
+  tiempo=0;
+  for(var i=0; i<3;i++){
+    cubo4d((x * (i+1)),y,z,    tiempo++," ");
+    styt = 'fill: blue; stroke: none; stroke-width: 1; font-family:monospace; font-size:12px';
+    text4d('nmes'+tiempo++, (x * (i+1)),y, styt, adias[i]);
+    cubo4d((x * (i+1)),(y*2),z,tiempo++,linea1[i])
+    cubo4d((x * (i+1)),(y*3),z,tiempo++,linea2[i])
+    cubo4d((x * (i+1)),(y*7),z,tiempo++,linea6[i]) 
+    cubo4d((x * (i+1)),(y*6),z,tiempo++,linea5[i])
+    cubo4d((x * (i+1)),(y*5),z,tiempo++,linea4[i])
+    cubo4d((x * (i+1)),(y*4),z,tiempo++,linea3[i])
+  }
+  for(var i=6; i>2;i--){
+    cubo4d((x * (i+1)),y,z,    tiempo++," ");
+    styt = 'fill: blue; stroke: none; stroke-width: 1; font-family:monospace; font-size:12px';
+    text4d('nmes'+tiempo++, (x * (i+1)),y, styt, adias[i]);
+    cubo4d((x * (i+1)),(y*2),z,tiempo++,linea1[i])
+    cubo4d((x * (i+1)),(y*3),z,tiempo++,linea2[i])
+    cubo4d((x * (i+1)),(y*7),z,tiempo++,linea6[i]) 
+    cubo4d((x * (i+1)),(y*6),z,tiempo++,linea5[i])
+    cubo4d((x * (i+1)),(y*5),z,tiempo++,linea4[i])
+    cubo4d((x * (i+1)),(y*4),z,tiempo++,linea3[i])
+  }
+  styt = 'fill: blue; stroke: none; stroke-width: 1; font-family:monospace; font-size:40px';
+  text4d('nanterior', 150, 20, styt, '← ');
+  a4d("anterior",150,20,20,"#");
+  styt = 'fill: blue; stroke: none; stroke-width: 1; font-family:monospace; font-size:40px';
+  text4d('nsiguiente', 362, 20, styt,"→");
+  a4d("siguiente",362,20,20,"#");
+  styt = 'fill: blue; stroke: none; stroke-width: 1; font-family:monospace; font-size:18px';
+  text4d('nmes', 256, 20, styt, titulo[0]+' '+titulo[1]);
+  pulso();
+}
+function a4d(pid,j,k,l,ref){
+  if (document.getElementById("a"+pid)) {document.getElementById("a"+pid).remove();}
+  var a = document.createElementNS("http://www.w3.org/2000/svg", "a");
+  a.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', ref);
+  a.setAttribute("id", "a"+pid); 
+  a.onclick = function() {
+    if(pid=="siguiente"){
+      pano = parseInt(titulo[1]);
+      pmes = parseInt(titulo[2]) + 1;
+      if(pmes>12){pano = pano + 1; pmes=1;};
+      if(pano < 2050){ abrir(pmes, pano); }
+    } else {
+      pano = parseInt(titulo[1]);
+      pmes = parseInt(titulo[2]) - 1;
+      if(pmes<1){pano = pano -1; pmes=12;};
+      if(pano > 2023){ abrir(pmes, pano); }
+    }
+    return false;
+  };
+    if(document.getElementById(pid)){document.getElementById(pid).remove();}
+    var o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); 
+    o4d.setAttribute("id", pid); 
+    o4d.setAttribute("shape-rendering", "geometricPrecision"); 
+    var tit = document.createElementNS("http://www.w3.org/2000/svg", "title");
+    tit.innerHTML= pid; 
+    o4d.appendChild(tit);    
+    p0 = (j - l) + ',' + (k - l); p1 = (j + l) + ',' + (k - l); p2 = (j + l) + ',' + (k + l); p3 = (j - l) + ',' + (k + l);
+    pts= p0 + " " + p1 + " "  + p2 + " " + p3 + " " + p0;     
+    o4d.setAttribute("points", pts);
+    o4d.setAttribute("style", "cursor: pointer; cursor: hand;  stroke: none; fill: rgba(0,0,255,0.1); stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;");
+    a.appendChild(o4d);
+    document.getElementById("panel4d").appendChild(a); 
+}
+function cubo4d(j,k,l,m,i){
+    if(i){
+      var partes = i.split(" "); 
+      i = partes[0]; 
+      var texto = partes.slice(1).join(" ");
+      styt = 'fill: black; stroke: none; stroke-width: 1; font-family:monospace; font-size:18px';
+      if(i.indexOf('*', 0)>=0){
+          i=i.replace(/\*/g, "");
+          styt = 'fill: red; stroke: none; stroke-width: 1; font-family:monospace; font-size:20px';
+      };
+    }
+    //j=Math.round(j);    k=Math.round(k);    l=Math.round(l); 
+    p0 = (j - l) + ',' + (k - l);     p1 = (j + l) + ',' + (k - l);     p2 = (j + l) + ',' + (k + l);     p3 = (j - l) + ',' + (k + l);
+    var i6 = p4d((j-l),(k+l),xmax,focoy,(j+l),(k+l),focox,focoy);     p6 = i6.x5 + ',' + i6.y5;
+    var i7 = p4d(0,i6.y5,xmax,i6.y5,(j-l),(k+l),focox,focoy);         p7 = i7.x5 + ',' + i7.y5;
+    var i4 = p4d(j-l,k-l,focox,focoy,i7.x5,i7.y5,i7.x5,0);            p4 = i4.x5 + ',' + i4.y5;
+    var i5 = p4d(i4.x5,i4.y5,xmax,i4.y5,i6.x5,i6.y5,i6.x5,0);         p5 = i5.x5 + ',' + i5.y5;
+    if (document.getElementById("cd"+m)) {document.getElementById("cd"+m).remove();}    if (document.getElementById("cb"+m)) {document.getElementById("cb"+m).remove();}    if (document.getElementById("cr"+m)) {document.getElementById("cr"+m).remove();}    if (document.getElementById("ci"+m)) {document.getElementById("ci"+m).remove();}    if (document.getElementById("cf"+m)) {document.getElementById("cf"+m).remove();}  
+    pruta= p4 + " " + p5 + " "  + p6 + " " + p7 + " " + p4  ; 
+    //poli4d('ca'+i, pruta,     'fill: none; stroke: none; stroke-width: 0.2; stroke-linecap: round; stroke-linejoin: round;');
+    if (j <= (focox - l )){
+        pruta= p1 + " " + p2 + " "  + p6 + " " + p5 + " " + p1  ; 
+        poli4d('cd'+m, pruta, 'fill: rgba(0,0,255,0.1); stroke: none; stroke-width: 0.4; stroke-linecap: round; stroke-linejoin: round;');
+    }
+    if (j >  (focox + l )){
+        pruta= p0 + " " + p3 + " "  + p7 + " " + p4 + " " + p0  ; 
+        poli4d('ci' + m, pruta, 'fill: rgba(255,0,0,0.1); stroke: none; stroke-width: 0.4; stroke-linecap: round; stroke-linejoin: round;');
+    }
+    if (k <= (focoy - l )){
+        pruta= p2 + " " + p6 + " "  + p7 + " " + p3 + " " + p2  ; 
+        poli4d('cb' + m, pruta, 'fill: rgba(0,255,0,0.1); stroke: none; stroke-width: 0.4; stroke-linecap: round; stroke-linejoin: round;');
+    }
+    if (k >  (focoy + l )){
+        pruta= p0 + " " + p1 + " "  + p5 + " " + p4 + " " + p0  ; 
+        poli4d('cr' + m, pruta, 'fill: rgba(191,255,0,0.1); stroke: none; stroke-width: 0.4; stroke-linecap: round; stroke-linejoin: round;');
+    }
+    pruta= p0 + " " + p1 + " "  + p2 + " " + p3 + " " + p0; 
+    if(i==hoy && pmeshoy==titulo[2] && panohoy==titulo[1]){
+      sty='fill: yellow; stroke: none ; stroke-width: 0.5; stroke-linecap: round; stroke-linejoin: round;';
+    } else {
+      sty='fill: white; stroke: none ; stroke-width: 0.5; stroke-linecap: round; stroke-linejoin: round;';
+    }
+    poli4d('cf'+m, pruta, sty);
+    text4d('t' + m, j, k, styt, i);
+}
+    function grid4d(paso, y2) { var sty ='fill: rgba(215,215,215,0.0625) ; stroke: silver; stroke-width: 0.5; stroke-linecap: round; stroke-linejoin: round;';     var i1  = (p4d(xmax, ymax, xmin, y2, xmin, ymax, xmax, ymin));  var i1x = i1.x5, i1y=i1.y5;     var i2x = (xmax - i1x)+xmin, i2y = i1y;     var i3x = (xmax - i1x)+xmin, i3y = (ymax - i1y)+ymin;     var i4x = i1x , i4y = i3y;     for (var l = xmin ; l <= xmax; l = l + paso ) {        var i7 = (p4d(l, ymax, focox, focoy, i1x, i1y, xmax, i1y)); var i7x = i7.x5, i7y=i7.y5;         var i8 = (p4d(i4x, i4y, i4x, i1y, xmin, l, focox, focoy));  var i8x = i8.x5, i8y=i8.y5;        var i5 = (p4d(l, ymax, focox, focoy, xmax, ymax, xmin, y2)); var i5x = i5.x5, i5y=i5.y5;        var i6 = (p4d(xmin, ymax, focox, focoy, i5x, i5y, xmin, i5y)); var i6x = i6.x5, i6y=i6.y5;        var i9 = (p4d(i6x, i6y, xmax, i6y, xmax, ymax, focox, focoy)); var i9x = i9.x5, i9y=i9.y5;         var i10x = i9x, i10y = (ymax - i9y) + ymin;         var i11x = i6x, i11y = (ymax - i6y) +ymin; 		pts = l + ',' + ymax + ' ' + i7x + ',' + i7y; poli4d('_vb' + l, pts, sty);         pts = l + ',' + ymin + ' ' + i7x + ',' + i4y; poli4d('_vt' + l, pts, sty);         pts = xmin + ',' + l + ' ' + i4x + ',' + i8y; poli4d('_hl' + l, pts, sty);         pts = i7y + ',' + i8y + ' ' + xmax + ',' + l; poli4d('_hr' + l, pts, sty);         pts = i9x + ',' + i9y + ' ' + i10x + ',' + i10y + ' ' + i11x + ',' + i11y + ' ' + i6x + ',' + i6y + ' ' + i9x + ',' + i9y; poli4d('_cc' + l, pts, sty);     }}
+function p4d(x1, y1, x2, y2, x3, y3, x4, y4){ var divisor = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)); if(divisor === 0){ return { x5: NaN , y5: NaN }; } var x5 = x1 + ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / divisor * (x2 - x1);      var y5 = y1 + ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / divisor * (y2 - y1);    return { x5: x5, y5: y5 }; }
+function poli4d(pid, pts, sty) {if (pts.indexOf("undefined")<0 && pts.indexOf("NaN")<0){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); o4d.setAttribute("id", pid); o4d.setAttribute("shape-rendering", "geometricPrecision"); } o4d.setAttribute("points", pts);                                                                                       if (sty !== " ") {o4d.setAttribute("style", sty);}                       if (!document.getElementById(pid)) {document.getElementById("panel4d").appendChild(o4d);}}}
+function circ4d(pid, pcx, pcy, pra, sty){if (!isNaN(pcx) && !isNaN(pcy)){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');  o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid);} o4d.setAttribute('cx', pcx);	o4d.setAttribute('cy', pcy); o4d.setAttribute('r', pra);	                            if (sty !== ' ') {o4d.setAttribute('style', sty);}	                     if (!document.getElementById(pid)) {document.getElementById('panel4d').appendChild(o4d);}}}
+function elip4d(pid, pcx, pcy, prx, pry, sty)                                          {var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse'); o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid);} o4d.setAttribute('cx', pcx);	o4d.setAttribute('cy', pcy); o4d.setAttribute('rx', prx); o4d.setAttribute('ry', pry);	if (sty !== ' ') {o4d.setAttribute('style', sty);}	                     if (!document.getElementById(pid)) {document.getElementById('panel4d').appendChild(o4d);}}
+function text4d(pid, px, py, sty, txt)                                                 {var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "text");    o4d.setAttribute("shape-rendering", "geometricPrecision"); o4d.setAttribute("id", pid);} o4d.setAttribute("x", px);   o4d.setAttribute("y", py);                                                                if (sty !== " ") {o4d.setAttribute("style", sty);} o4d.textContent = txt;
+o4d.setAttribute("alignment-baseline", "middle");
+o4d.setAttribute("text-anchor", "middle");
+if (!document.getElementById(pid)) {document.getElementById("panel4d").appendChild(o4d);}}
+</script>
+</body>
+</html>
