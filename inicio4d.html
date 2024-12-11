@@ -42,7 +42,23 @@ function ruedamapa(e) {
 	currentViewBox = viewBoxes[currentViewBoxIndex]; 
 	document.getElementById("mapa").setAttribute('viewBox', currentViewBox.join(' '));
 }
-
+const ubica = () => {
+    if (!"geolocation" in navigator) { }
+    const onUbicacionConcedida = ubicacion => {
+        lat = - ubicacion.coords.latitude;
+        lon = ubicacion.coords.longitude;
+		circ4dm('mapa', 'Yo', lon, lat, 0.005, 'fill: blue; stroke: white; stroke-width: 0.001; stroke-linecap: round;stroke-linejoin: round;');
+    }
+    const onErrorDeUbicacion = err => {
+		console.log("err");
+    }
+    const opcionesDeSolicitud = {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 5000
+    };
+    navigator.geolocation.getCurrentPosition(onUbicacionConcedida, onErrorDeUbicacion, opcionesDeSolicitud);
+}
 callmapa("/Todo4D.html");
 
 function callmapa(objeto) {
@@ -75,8 +91,6 @@ function dibujamapa(rta) {
         }
     }
 }
-coordenadas();
-	
 function coordenadas(){
 	sty = 'fill: none; stroke: rgba(50,205,50,1); stroke-width: 0.1; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 0.5, 0.1;';
 	styt = 'fill: lime; stroke: lime; stroke-width: 0.01; font-family:monospace; font-size:4px';	
