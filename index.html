@@ -156,12 +156,11 @@ input[type="text"], input[type="password"], select {
     <div></div>
     <div class="topnav">
         <span><a href="/">Home</a></span>
-	<span><a href="/login4d.html">Login</a></span>
-        <span><a href="/CV_SanchezVelezJorgeJulian.htm">C.V.</a></span>
-	<span><a href="/servicios.html">Servicios</a></span>
-        <span><a href="/editorc4d.htm">Editor</a></span>
-        <span><a href="/calendario4d.html">Calendario</a></span>
-
+	<span onclick="selecciona('calendario4d.html')">Calendario</span>
+	<span onclick="selecciona('login4d.html')">Login</span>
+	<span onclick="selecciona('servicios.html')">Servicios</span>
+        <span onclick="selecciona('editorc4d.htm')">EditorC4D</span>
+	<span onclick="selecciona('CV_SanchezVelezJorgeJulian.htm')">C.V.</a></span>
         <div class="dropdown">
             <button class="dropbtn">IA</button>
             <div class="dropdown-content">
@@ -176,11 +175,16 @@ input[type="text"], input[type="password"], select {
     </div>
     <div class="row">
         <div class="card1" onclick="window.open(document.getElementById('frame4d4').src, '_blank'); return false;">
-          <iframe id="frame4d" class="iframe0" src="CV_SanchezVelezJorgeJulian.htm" ></iframe>          
+          <iframe id="frame4d" class="iframe0" src="calendario4d.html" ></iframe>          
         </div>
     </div>
     <div class="footer">
         Laboratorio de Inteligencia Artificial SVJJ
     </div>
+	<script>
+		function seleciona(html){
+			document.getelementById("frame4d").src=html;
+		}
+	</script>
 </body>
 </html>
