@@ -67,8 +67,8 @@ function callmapa(objeto) {
 	xmlHttp.onreadystatechange = function () {
 		if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
 			dibujamapa(xmlHttp.responseText);
-			coordenadas();
 			ubica();
+			coordenadas();
 		}
 	}; xmlHttp.open("GET", theUrl, true);
 	xmlHttp.send(null);
