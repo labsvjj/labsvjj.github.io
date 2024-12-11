@@ -16,7 +16,44 @@
 <body>
 <svg    id="mapa" viewBox="-180.000 -90.000 180 180" style="display: none; outline: silver solid 1px; position: absolute; left: 0px;   top: 0px; width: 512px; height: 512px;"><title id="tooltip"></title></svg>
 <script>
-
+function coordenadas(){
+	sty = 'fill: none; stroke: rgba(50,205,50,1); stroke-width: 0.1; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 0.5, 0.1;';
+	styt = 'fill: lime; stroke: lime; stroke-width: 0.01; font-family:monospace; font-size:4px';	
+	for (var l= -180; l<=0; l= l + 10){			
+		pts = l +  ',-90' + ' ' + l +',90';	
+		poli4dm('mapa', 'l' + l, pts, sty); 
+		text4dm('mapa', 't' + l, (l), 87, styt, l);		
+	}		
+	for (var l= -90; l<= 90; l= l + 10){			
+		pts = '-180,' + l + ' ' + '0,' + l;			
+		poli4dm('mapa', 'm' + l, pts, sty); 			
+		text4dm('mapa', 'tm' + l, -7, (l+1.5), styt, -l);		
+	}	
+	sty = 'fill: none; stroke: rgba(50,205,50,0.5); stroke-width: 0.01; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 0.5, 0.1;';	
+	styt = 'fill: none; stroke: lime; stroke-width: 0.05; font-family:monospace; font-size:0.4px';	
+	for (var l= -82; l<=-62; l++){		
+		pts = l +',-14' + ' ' + l +',6';		
+		poli4dm('mapa', 'al' + l, pts, sty); 		
+		text4dm('mapa', 'at' + l, l, 0.1, styt, l);	
+	}	
+	for (var l= -14; l<= 6; l++){		
+		pts = '-82,' + l + ' ' + '-62,' + l;		
+		poli4dm('mapa', 'am' + l, pts, sty); 		
+		text4dm('mapa', 'tam' + l, -70, (l - 0.1), styt, -l);	
+	}	
+	sty = 'fill: none; stroke: rgba(50,205,50,0.5); stroke-width: 0.0005; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 0.001, 0.001;';
+	styt = 'fill: lime; stroke: none; stroke-width: 0.0001; font-family:monospace; font-size:0.006px';	
+	for (var l= -75.740; l<=-75.228; l=l+0.02){		
+		pts = l.toFixed(3) +',-6.438' + ' ' + l.toFixed(3) +',-5.926';		
+		poli4dm('mapa', 'ml' + l, pts, sty); 		
+		text4dm('mapa', 'mt' + l, (l).toFixed(3), -6, styt, l.toFixed(2));	
+	}	
+	for (var l= -6.438; l< -5.926; l=l+0.02){		
+		pts = '-75.740,' + l.toFixed(3) + ' ' + '-75.228,' + l.toFixed(2);		
+		poli4dm('mapa', 'mm' + l, pts, sty); 		
+		text4dm('mapa', 'mtm' + l, -75.24, (l-0.001).toFixed(3), styt, (-l).toFixed(2));	
+	}
+}
 </script>
 </body>
 </html>
