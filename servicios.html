@@ -14,10 +14,24 @@
                 <li>Predicciones con múltiples modelos de IA.</li>
                 <li>Editor de datos para la creación de datasets personalizados.</li>
             </ul>
+	
 	<div>
-		Aportes y Donaciones al codigo QR :<br/>
+		Pagos, Aportes y Donaciones al codigo QR :<br/>
 		<img src="LabSVJJ_QR.png" width="200px" height="200px" />
 	</div>
+	<div id="dolar"></div>
+	<script>
+async function obtenerTasaDeCambio() {
+	const response = await fetch('https://trm-colombia.vercel.app/');
+	const data = await response.json();
+	return data.data.value; // Devuelve el valor del dólar en pesos colombianos
+}
+async function mostrarTasaDeCambio() {
+    const tasaDeCambio = await obtenerTasaDeCambio();
+    document.getElementById("dolar").innerHTML =(`La tasa de cambio actual es: ${tasaDeCambio} COP por USD`);
+}
+mostrarTasaDeCambio();
+	</script>
 
 </body>
 </html>
