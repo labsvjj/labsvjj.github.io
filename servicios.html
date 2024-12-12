@@ -21,6 +21,7 @@
 	</div>
 	<div id="dolar"></div>
 	<div id="coord"></div>
+	<div id="altur"></div>
 	<div id="tempe"></div>
 	<div id="veloc"></div>
 	<script>
@@ -51,7 +52,7 @@ const ubica = () => {
         lon = ubicacion.coords.longitude;
 	document.getElementById("coord").innerHTML =(`Latitude : ${lat} Longitud: ${lon}`);
 	mostrarClima(lat, lon);
-
+	mostrarAltura(lat, lon);
     }
     const onErrorDeUbicacion = err => {
 		console.log("err");
@@ -74,7 +75,15 @@ async function mostrarClima(latitud, longitud) {
     document.getElementById("tempe").innerHTML =(`La temperatura actual es: ${clima.temperature_2m} °C`);
     document.getElementById("veloc").innerHTML =(`La velocidad del viento es: ${clima.wind_speed_10m} km/h`);
 }
-
+async function obtenerAltura(latitud, longitud) {
+    const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitud}&longitude=${longitud}&current=temperature_2m,wind_speed_10m`);
+    const data = await response.json();
+    return data.elevation; // Devuelve la altura
+}
+async function mostrarAltura(latitud, longitud) {
+    const clima = await obtenerAltura(latitud, longitud);
+    document.getElementById("altur").innerHTML =(`Altitud : ${clima.elevation} mt`);
+}
 
 	</script>
 
