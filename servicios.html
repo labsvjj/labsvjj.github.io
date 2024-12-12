@@ -39,7 +39,7 @@ async function mostrarTasaDeCambio() {
     const fechaActual = obtenerFechaActual();
     const tasaDeCambio = await obtenerTasaDeCambio(fechaActual);
     console.log(`La tasa de cambio actual es: ${tasaDeCambio} COP por USD`);
-    document.getElementById("dolar").innerHTML =(`La tasa de cambio actual es: ${tasaDeCambio} COP por USD`);
+    document.getElementById("dolar").innerHTML =(`La tasa de cambio ${fechaActual} actual es: ${tasaDeCambio} COP por 1 USD`);
 }
 
 mostrarTasaDeCambio();
