@@ -49,7 +49,7 @@ const ubica = () => {
     const onUbicacionConcedida = ubicacion => {
         lat = ubicacion.coords.latitude;
         lon = ubicacion.coords.longitude;
-	document.getElementById("coord").innerHTML =(`Latitude : ${lat} Longitud: ${lon}`);
+	document.getElementById("coord").innerHTML =(`Latitud : ${lat} Longitud: ${lon}`);
 	mostrarClima(lat, lon);
 	mostrarAltura(lat, lon);
     }
