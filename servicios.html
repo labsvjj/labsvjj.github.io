@@ -21,16 +21,29 @@
 	</div>
 	<div id="dolar"></div>
 	<script>
-async function obtenerTasaDeCambio() {
-	const response = await fetch('https://trm-colombia.vercel.app/');
-	const data = await response.json();
-	return data.data.value; // Devuelve el valor del dólar en pesos colombianos
+async function obtenerTasaDeCambio(fecha) {
+    const response = await fetch(`https://trm-colombia.vercel.app/?date=${fecha}`);
+    const data = await response.json();
+    return data.data.value; // Devuelve el valor del dólar en pesos colombianos
 }
+
+function obtenerFechaActual() {
+    const fecha = new Date();
+    const anio = fecha.getFullYear();
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Meses comienzan desde 0
+    const dia = fecha.getDate().toString().padStart(2, '0');
+    return `${anio}-${mes}-${dia}`;
+}
+
 async function mostrarTasaDeCambio() {
-    const tasaDeCambio = await obtenerTasaDeCambio();
+    const fechaActual = obtenerFechaActual();
+    const tasaDeCambio = await obtenerTasaDeCambio(fechaActual);
+    console.log(`La tasa de cambio actual es: ${tasaDeCambio} COP por USD`);
     document.getElementById("dolar").innerHTML =(`La tasa de cambio actual es: ${tasaDeCambio} COP por USD`);
 }
+
 mostrarTasaDeCambio();
+
 	</script>
 
 </body>
