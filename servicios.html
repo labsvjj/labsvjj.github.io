@@ -22,7 +22,6 @@
 	<div id="dolar"></div>
 	<div id="coord"></div>
 	<div id="altur"></div>
-	<div id="luna"></div>
 	<div id="tempe"></div>
 	<div id="veloc"></div>
 	<script>
@@ -53,7 +52,6 @@ const ubica = () => {
 	document.getElementById("coord").innerHTML =(`Latitud : ${lat} Longitud: ${lon}`);
 	mostrarClima(lat, lon);
 	mostrarAltura(lat, lon);
-	mostrarProximaLunaLlena(lat, lon);
     }
     const onErrorDeUbicacion = err => {
 		console.log("err");
@@ -85,19 +83,7 @@ async function mostrarAltura(latitud, longitud) {
     const altura = await obtenerAltura(latitud, longitud);
     document.getElementById("altur").innerHTML =(`Altitud : ${altura} mt`);
 }
-async function obtenerProximaLunaLlena(latitud, longitud) {
-    const response = await fetch(`https://moon-phase.p.rapidapi.com/basic?lat=${latitud}&lon=${longitud}`);
-    const data = await response.json();
-    return data;
-}
-async function mostrarProximaLunaLlena(latitud, longitud) {
-    try {
-        const proximaLunaLlena = await obtenerProximaLunaLlena(latitud, longitud);
-        document.getElementById("luna").innerHTML =(`La próxima luna llena será en: ${proximaLunaLlena.days_until_next_full_moon} días`);
-    } catch (error) {
-        console.error(error);
-    }
-}
+
 	</script>
 
 </body>
