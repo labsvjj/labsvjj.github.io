@@ -70,17 +70,19 @@ const ubica = () => {
 callmapa("/Todo4D.html");
 
 function callmapa(objeto) {
-	theUrl = '.' + objeto;
-	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.onreadystatechange = function () {
-		if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-			dibujamapa(xmlHttp.responseText);
-			ubica();
-			coordenadas();
-		}
-	}; xmlHttp.open("GET", theUrl, true);
-	xmlHttp.send(null);
+    const theUrl = window.location.origin + objeto;
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            dibujamapa(xmlHttp.responseText);
+            ubica();
+            coordenadas();
+        }
+    };
+    xmlHttp.open("GET", theUrl, true);
+    xmlHttp.send(null);
 }
+
 function dibujamapa(rta) {
     parser = new DOMParser();
     xmlDoc = parser.parseFromString(rta, "text/xml");
