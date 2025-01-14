@@ -121,7 +121,7 @@ async function detectFaces() {
                 acceso(detections[0].descriptor );
             }
         }
-        text4d('login',   244,  20  ,'fill: red;   stroke:  red ;   font-family: Verdana; font-size:20px','ACCESO NO AUTORIZADO');
+        text4d('login',   71,  20  ,'fill: red;   stroke:  red ;   font-family: Verdana; font-size:20px','ACCESO NO AUTORIZADO');
         lineas(detections[0].landmarks.positions,sty1); 
     } else {
      //   canvas4d.fillStyle = 'white';
@@ -335,7 +335,7 @@ function acceso(descriptor0){
     for (let i = 0; i < descriptor0.length; i++)    {
         if(desmax[i]>descriptor0[i]>desmin[i]){
             contador++;
-            text4d('pro', 340, 40, 'fill: lime; stroke: black; font-family: Verdana; font-size:16px',  contador + '/128');
+            text4d('pro', 71, 40, 'fill: lime; stroke: black; font-family: Verdana; font-size:16px',  contador + '/128');
         }
     }
     if(contador>124){
