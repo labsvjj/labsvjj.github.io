@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<!--Obra : EditorC4D : Software para ilustrar en la Web, Autor: Jorge Julian Sanchez Velez, DNDA: Registro nacional de Derechos de autor Libro 13 Tomo 32 Partida 433 20120320 -->
+<title>EditorC4D</title>
+<meta       name = "viewport"     content = "width=device-width, initial-scale=1.0">
+<meta       name = "Autor"        content = "jorge4d"/>
+<meta       name = "Latitud"      content = "6.2529001235962"/>
+<meta       name = "Longitud"     content = "-75.564598083496"/>
+<meta       name = "Altitud"      content = "3000.00"/>
+<meta       name = "Momento"      content = "2024/09/20_11:57:00"/>
+<meta       name = "Email"        content = "labsvjj@gmail.com"/>
+<meta       name = "keywords"     content = "Editor SVG Cuarta Dimension America4D"/>
+<meta       name = "description"  content = "Plataforma de interacci�n vectorial"/>
+<meta http-equiv = "Expires"      content = "Tue, 25 Abr 1990 09:30:00 -0700"/>
+<meta http-equiv = "Content-Type" content = "text/html;charset=utf-8"/>
+<meta http-equiv = "encoding"     content = "utf-8"/>
+<style>.boton       {background-color: #d7d7d7;}.boton:hover {background-color: rgb(128,128,128);}.bactivo     {background-color: yellow;}</style>
+</head>
+<body>
+<input  id="imagenes"   style="display:none;" type="file" onChange="recorta();" size="1" name="imagenes" />
+<input  id="objetos4d"  style="display:none;" type="file" onChange="leeXML();" />
+<img    id="im"         style="display: block; position:absolute; top: 0px;  left: 0px;"/>
+<canvas id='myCanvas4D' style="background-color: white; position: absolute; display: block; left: 0px; top: 0px; width: 512px; height: 512px;" width='512px' height='512px'></canvas>
+<canvas id='canvas64'   style="background-color: #d7d7d7; position: absolute; left: 512px; top: 256px; width: 64px; height: 64px; cursor:pointer; cursor:hand; " onclick="suiche4d('myCanvas4D')" width='64px' height='64px'></canvas>
+<svg    id="panel4d"    style="outline: #C0C0C0FF solid 1px; position: absolute; left: 0px; top: 0px; width: 512px; height: 512px;" viewBox="0 0 512 512" preserveAspectRatio="none"></svg>
+<svg    id="bcolor"     style="position: absolute; width: 64px; height: 64px; top: 0px; left: 512px;">
+	<polyline style="fill: yellow; stroke: yellow;  stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;" points="4,4 28,4 28,14 4,14 4,4"></polyline>
+	<polyline style="fill: orange; stroke: orange;  stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;" points="4,16 28,16 28,26 4,26 4,16"></polyline>
+	<polyline style="fill: red;    stroke: red;     stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;" points="4,28 28,28 28,38 4,38 4,28"></polyline>
+	<polyline style="fill: brown;  stroke: brown;   stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;" points="4,40 28,40 28,50 4,50 4,40"></polyline>
+	<polyline style="fill: black;  stroke: black;   stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;" points="4,52 28,52 28,62 4,62 4,52"></polyline>
+	<polyline style="fill: white;  stroke: white;   stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;" points="32,4 60,4 60,14 32,14 32,4"></polyline>
+	<polyline style="fill: gray;   stroke: gray;    stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;" points="32,16 60,16 60,26 32,26 32,16"></polyline>
+	<polyline style="fill: purple; stroke: purple;  stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;" points="32,28 60,28 60,38 32,38 32,28"></polyline>
+	<polyline style="fill: blue;   stroke: blue;    stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;" points="32,40 60,40 60,50 32,50 32,40"></polyline>
+	<polyline style="fill: green;  stroke: green;   stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;" points="32,52 60,52 60,62 32,62 32,52"></polyline>
+</svg>
+<script>
+	var colores = ['black', 'brown', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'gray', 'white'];
+	var contadordecolores = 0;
+var x = 256, y = 256, z= 4, tiempo=1;
+var anchocan = 512, zoom = 32, croping = "", factor, dx, dy;
+var dibujando = 0, r, pa = '', pi = '', conta = 0, contatext=0;
+var moviendoblip, seleccionado, rutaseleccionada, colorfil = 'none', colorstroke = '#000000', grueso = '1';
+var gotero = false, intro = false, colorear = true;
+var k = 0, puntos = '', sty = '';
+var fila4d = [], array;
+var canvas1 = document.getElementById("myCanvas4D");
+var canvas4d = canvas1.getContext("2d");
+var canvas2 = document.getElementById("canvas64");
+var canvas24d = canvas2.getContext("2d");
+var imageObj = document.getElementById('im') , fileName = "objeto4d";
+if (window.addEventListener) {
+    document.getElementById('panel4d').addEventListener('mousemove', muevemouse, false);
+    document.getElementById('panel4d').addEventListener('wheel', rueda, false);
+    document.getElementById('panel4d').addEventListener('mousewheel', rueda, false);
+    document.getElementById('panel4d').addEventListener('DOMMouseScroll', rueda, false);
+    document.getElementById('panel4d').addEventListener('dblclick', dobleclic, false);
+    document.getElementById('panel4d').addEventListener('contextmenu', clicdere, false);
+    document.getElementById('panel4d').addEventListener('click', clicmouse, false);
+} else {
+    document.getElementById('panel4d').onmousemove = muevemouse;
+    document.getElementById('panel4d').onwheel = rueda;
+    document.getElementById('panel4d').mousewheel = rueda;
+    document.getElementById('panel4d').DOMMouseScroll = rueda;
+    document.getElementById('panel4d').ondblclick = dobleclic;
+    document.getElementById('panel4d').oncontextmenu = clicdere;
+    document.getElementById('panel4d').onclick = clicmouse;
+}
+function dibujaXML() {
+    var array;
+    for (i = 0; i < fila4d.length; i++) {
+        array = fila4d[i].split("|");
+        if (array[2] === "polyline") {
+            poli4d(array[3], array[6], array[7]);
+        }
+        if (array[2] === "circle") {
+            circ4d(array[3], array[4], array[5], array[6], array[7]);
+        }
+        if (array[2] === "text") {
+            text4d(array[3], array[4], array[5], array[7], array[6]);
+        }
+    }
+}
+function atras4d() {
+	if (seleccionado) {
+		document.getElementById('b5').className.baseVal = "bactivo";
+		var sty = "fill: " + seleccionado.style.fill + "; stroke: " + seleccionado.style.stroke + "; stroke-width: " + seleccionado.style.strokeWidth + "; stroke-linecap: round;stroke-linejoin: round;";
+		puntos = seleccionado.points;
+		var ptos = puntos.numberOfItems;
+		var prutatras = '';
+		for (var incrementador = 0; incrementador < ptos; incrementador++) {
+			prutatras += puntos.getItem(incrementador).x + "," + puntos.getItem(incrementador).y + " ";
+		}
+		var j = 0;
+		var pidatras = seleccionado.id;
+		fila4d[j] = j + "|" + "checked|polyline|" + pidatras + "| | |" + prutatras + "|" + sty;
+		var nodos = document.getElementById("panel4d").childNodes.length;
+		for (var incrementador = 0; incrementador < nodos; incrementador++) {
+			var objeto = document.getElementById("panel4d").childNodes[incrementador];
+			var pid = objeto.id;
+			if (pid) {
+				if (pid.indexOf('__4Dblip') < 0 && pid.indexOf('_espiral') < 0 && pid.indexOf('_coloralfa') < 0 && pid.indexOf('_colorrojo') < 0 && pid.indexOf('_colorverde') < 0 && pid.indexOf('_colorazul') < 0) {
+					if (pid != '_curs' && pid != '_temp') {
+						sty = "fill: " + objeto.style.fill + "; stroke: " + objeto.style.stroke + "; stroke-width: " + objeto.style.strokeWidth + "; stroke-linecap: round;stroke-linejoin: round;";
+						puntos = objeto.points;
+						var ptos = puntos.numberOfItems;
+						var pruta = '';
+						for (var i = 0; i < ptos; i++) {
+							pruta += puntos.getItem(i).x + "," + puntos.getItem(i).y + " ";
+						}
+						if (pidatras != pid && prutatras != pruta) {
+							j++;
+							console.log(pid);
+							fila4d[j] = j + "|" + "checked|polyline|" + pid + "| | |" + pruta + "|" + sty;
+						}
+					}
+				}
+			}
+		}
+		limpiar4d();
+		clearpanel();
+		dibujaXML();
+		document.getElementById('b5').className.baseVal = "boton";
+	}
+}
+function clearpanel() {
+	var nodos = document.getElementById("panel4d").childNodes.length - 1;
+	for (var i = nodos; i > 0; i--) {
+		var objeto = document.getElementById("panel4d").childNodes[i];
+		document.getElementById("panel4d").removeChild(objeto);
+	}
+}
+function colorear4d() {
+	if (colorear) {
+		colorear = false;
+		document.getElementById('b4').className.baseVal = "bactivo";
+		for (i = 0; i < fila4d.length; i++) {
+			array = fila4d[i].split("|");
+			if (array[2] === "polyline") {
+				var pestilo = array[7].split(";");
+				var pfill = pestilo[0].split(":");
+				var pcolorfill = pfill[1];
+				var pstroke = pestilo[1].split(":");
+				var pcolorstroke = pstroke[1];
+				sty = 'fill: ' + pcolorstroke + '; stroke: ' + pcolorstroke + '; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;';
+				poli4d(array[3], array[6], sty);
+			}
+		}
+	} else {
+		colorear = true;
+		document.getElementById('b4').className.baseVal = "boton";
+		for (i = 0; i < fila4d.length; i++) {
+			array = fila4d[i].split("|");
+			if (array[2] === "polyline") {
+				var pestilo = array[7].split(";");
+				var pfill = pestilo[0].split(":");
+				var pcolorfill = pfill[1];
+				var pstroke = pestilo[1].split(":");
+				var pcolorstroke = pstroke[1];
+				sty = 'fill: none; stroke: ' + pcolorstroke + '; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;';
+				poli4d(array[3], array[6], sty);
+			}
+		}
+	}
+}
+function cli() {
+	if (dibujando === 1) {
+		sty = "fill: " + colorfil + "; stroke: " + colorstroke + "; stroke-width: " + grueso + "; stroke-linecap: round;stroke-linejoin: round;";
+		if (pi === '') {
+			actual = 'Vector' + conta;
+			conta++;
+			while (document.getElementById(actual)) {
+				actual = 'Vector' + conta;
+				conta++;
+			}
+			pix = x;
+			piy = y;
+			pi = x + ',' + y;
+			pa = pi;
+			r = pa;
+			poli4d(actual, r, sty);
+			seleccionado = document.getElementById(actual);
+		} else {
+			r = r + ',' + x + ',' + y;
+			poli4d(actual, r, sty);
+			pa = x + ',' + y;
+		}
+	}
+}
+function seleccione(objetivo) {
+	limpiar4d();
+	if (objetivo.nodeName !== 'svg') {
+		seleccionado = objetivo;
+		if (objetivo.nodeName === 'text') {
+			SVGRect=seleccionado.getBBox();
+			sty='fill:none; stroke-width:1;stroke: lime;';
+			rect4d('__4Drect', SVGRect.x, SVGRect.y, SVGRect.width, SVGRect.height, 3, 3, sty);
+			propiedades4d(seleccionado);
+		}
+		if (objetivo.nodeName === 'circle') {
+		}
+		if (objetivo.nodeName === 'polyline') {
+			rutaseleccionada = objetivo.points;
+			colorfil = objetivo.style.fill;
+			colorstroke = objetivo.style.stroke;
+			if (colorstroke == 'rgb(0, 0, 0)') {
+				colorstroke = '#000000'
+			}
+			grueso = objetivo.style.strokeWidth;
+			poneblips('__4Dblip', objetivo.points, 'lime');
+			propiedades4d(seleccionado);
+		}
+	}
+}
+function muevemouse(e) {
+	e = window.event || e;
+	x = parseInt(e.pageX);
+	y = parseInt(e.pageY);
+	var target = e.target;
+	if (!seleccionado) {
+		if (e.target.getAttributeNS(null, "id") != 'panel4d' && e.target.getAttributeNS(null, "id") != '_curs' && e.target.getAttributeNS(null, "id") != '_temp') {
+			if (e.target.getAttributeNS(null, "id").indexOf('__4Dblip') < 0) {
+				
+			}
+		}
+	}
+	if (dibujando === 1) {
+		curso();
+	}
+	if (moviendoblip) {
+		c4d(x, y, 4.5, moviendoblip, 'none', 'red', 'panel4d');
+		if (seleccionado.nodeName === 'polyline') {
+			var puntos = rutaseleccionada;
+			var ptos = puntos.numberOfItems;
+			var pruta = '';
+			for (var incrementador = 0; incrementador < ptos; incrementador++) {
+				pruta += puntos.getItem(incrementador).x + "," + puntos.getItem(incrementador).y + " ";
+			}
+			var pruta1 = pruta.replace(puntoanterior, x + ',' + y);
+			puntoanterior = x + ',' + y;
+			poli4d(seleccionado.id, pruta1, ' ');
+		}
+	}
+	if (croping) {
+		muestrazoom();
+	}
+	if (gotero) {
+		chupacolor();
+		pruta = x + "," + y + " " + (x) + "," + (y - 2) + "," + (x + 7) + "," + (y - 7) + "," + (x + 9) + "," + (y - 5) + "," + (x + 2) + "," + (y) + "," + x + "," + y;
+		colorfill = document.getElementById('pat').style.fill;
+		colorstroke = document.getElementById('pat').style.stroke;
+		sty = 'fill: ' + colorfill + '; stroke: black; stroke-width: 0.333; stroke-linecap: round; stroke-linejoin: round;';
+		poli4d("_gota", pruta, sty);
+		puntos = seleccionado.points;
+		var ptos = puntos.numberOfItems;
+		var pruta = '';
+		for (var incrementador = 0; incrementador < ptos; incrementador++) {
+			pruta += puntos.getItem(incrementador).x + "," + puntos.getItem(incrementador).y + " ";
+		}
+		sty = 'fill: ' + colorfill + '; stroke: ' + colorstroke + '; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;';
+		poli4d(seleccionado.id, pruta, sty);
+	}
+}
+function dobleclic(e) {
+	if (seleccionado) {
+		e = window.event || e;
+		x = parseInt(e.pageX);
+		y = parseInt(e.pageY);
+		var target = e.target;
+		if (target.id.indexOf('__4Dblip') >= 0) {
+			puntoanterior = target.cx.animVal.value + ',' + target.cy.animVal.value;
+			var puntoinserta = target.cx.animVal.value + ',' + target.cy.animVal.value + ' ' + (target.cx.animVal.value + 2) + ',' + (target.cy.animVal.value - 2);
+			puntos = seleccionado.points;
+			var ptos = puntos.numberOfItems;
+			pruta = '';
+			for (var incrementador = 0; incrementador < ptos; incrementador++) {
+				pruta += puntos.getItem(incrementador).x + "," + puntos.getItem(incrementador).y + " ";
+			}
+			var pruta1 = pruta.replace(puntoanterior, puntoinserta);
+			poli4d(seleccionado.id, pruta1, ' ');
+			quitablips('__4Dblip');
+			seleccione(seleccionado);
+		}
+	}
+}
+function rueda(e) {
+    e = window.event || e;  var target = e.target;
+    if (croping) {
+        var delta = Math.max(-1, Math.min(1, e.wheelDelta || -e.detail));
+        zoom = zoom + delta;
+        muestrazoom();
+    }
+}
+function clicdere(e) {
+    e.preventDefault();
+}
+function clicmouse(e) {
+	e = window.event || e;
+	x = parseInt(e.pageX);
+	y = parseInt(e.pageY);
+	var target = e.target;
+	if (croping) {cropiado();}
+	if (gotero) {
+		document.getElementById("_gota").remove();
+		colorfill = document.getElementById('pat').style.fill;
+		colorstroke = document.getElementById('pat').style.stroke;
+		gotero = false;
+		document.getElementById('panel4d').style.cursor = 'default';
+		rehacerfila4d();
+		document.getElementById('b3').className.baseVal = "boton";
+	}
+	if (moviendoblip) {
+		c4d(x, y, 3, moviendoblip, 'lime', 'lime', 'panel4d');
+		rehacerfila4d();
+		moviendoblip = '';
+	} else {
+		if (dibujando === 1) {
+			cli();
+		} else {
+			if (target.id.indexOf('__4Dblip') >= 0) {
+				moviendoblip = target.id;
+				puntoanterior = target.cx.animVal.value + ',' + target.cy.animVal.value;
+			} else {
+				if (target.id.indexOf('__4Drect') >= 0) {
+					moviendotexto = target.id;
+				} else {
+					if (seleccionado) {
+							limpiar4d();
+					} else {
+						seleccione(e.target);
+					}
+				}
+				
+			}
+		}
+	}
+}
+function colorpic4d() {
+	if (seleccionado) {
+		if (gotero) {
+			gotero = false;
+			document.getElementById('panel4d').style.cursor = 'default';
+		} else {
+			gotero = true;
+			document.getElementById('panel4d').style.cursor = 'none';
+			document.getElementById('b3').className.baseVal = "bactivo";
+		}
+	}
+}
+function chupacolor() {
+	var rojo = canvas4d.getImageData(x, y, 1, 1).data[0];
+	var verde = canvas4d.getImageData(x, y, 1, 1).data[1];
+	var azul = canvas4d.getImageData(x, y, 1, 1).data[2];
+	var alfa = canvas4d.getImageData(x, y, 1, 1).data[3];
+	if (rojo < 16) {
+		rojo = "0" + rojo.toString(16).toUpperCase();
+	} else {
+		rojo = rojo.toString(16).toUpperCase();
+	}
+	if (verde < 16) {
+		verde = "0" + verde.toString(16).toUpperCase();
+	} else {
+		verde = verde.toString(16).toUpperCase();
+	}
+	if (azul < 16) {
+		azul = "0" + azul.toString(16).toUpperCase();
+	} else {
+		azul = azul.toString(16).toUpperCase();
+	}
+	if (alfa < 16) {
+		alfa = "0" + alfa.toString(16).toUpperCase();
+	} else {
+		alfa = alfa.toString(16).toUpperCase();
+	}
+	colorchupado = "#" + rojo + verde + azul + alfa;
+	if(colorchupado==="#00000000"){
+		document.getElementById('pat').style.fill = "RGB(255,255,255)";
+		document.getElementById('pat').style.stroke = "RGB(0,0,0)";
+	} else {
+		document.getElementById('pat').style.fill = colorchupado;
+		document.getElementById('pat').style.stroke = colorchupado;	
+	}
+}
+function poly4d() {
+	if (dibujando == 1) {
+		x = pix;y = piy; cli();
+		dibujando = 0;
+		cier4d();
+		rehacerfila4d();
+		document.getElementById('panel4d').style.cursor = 'default';
+		document.getElementById('b2').className.baseVal = "boton";
+	} else {
+		document.getElementById('b2').className.baseVal = "bactivo";
+		dibujando = 1;
+		curso();
+		document.getElementById('panel4d').style.cursor = 'none';
+	}
+}
+function curso() {
+	var sty = '', cu = '';
+	if (dibujando === 1) {
+		if (pa !== '') {
+			sty = 'fill: none; stroke: red; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;';
+			cu = pa + ',' + x + ',' + y;
+			poli4d('_temp', cu, sty);
+		}
+		sty = 'fill: none; stroke: blue; stroke-width: 1; stroke-linecap: round; stroke-linejoin: round;';
+		cu = x - 2 + ',' + (y - 2) + ',' + (x + 2) + ',' + (y - 2) + ',' + (x + 2) + ',' + (y + 2) + ',' + (x - 2) + ',' + (y + 2) + ',' + (x - 2) + ',' + (y - 2);
+		poli4d('_curs', cu, sty);
+	}
+}
+function cier4d() {
+    moviendotexto='', seleccionado = '', boton = '', dibujando = 0,	k = 0, pi = '',	pa = '';
+	if (document.getElementById('_curs')) {
+		document.getElementById('_curs').remove();
+	}
+	if (document.getElementById('_temp')) {
+		document.getElementById('_temp').remove();
+	}
+	document.getElementById('panel4d').style.cursor = 'default';
+}
+function limpiar4d() {
+	quitablips('__4Dblip');
+	quitablips('__4Drect'); 
+	moviendotexto='';               
+	seleccionado = '';
+}
+function rehacerfila4d() {
+	fila4d = [];
+	var j = 0;
+	var nodos = document.getElementById("panel4d").childNodes.length;
+	for (var incrementador = 0; incrementador < nodos; incrementador++) {
+		var objeto = document.getElementById("panel4d").childNodes[incrementador];
+		var pid = objeto.id;
+		if (pid) {
+			if (pid.indexOf('__4Dblip') < 0 && pid.indexOf('_espiral') < 0 && pid.indexOf('_coloralfa') < 0 && pid.indexOf('_colorrojo') < 0 && pid.indexOf('_colorverde') < 0 && pid.indexOf('_colorazul') < 0) {
+				if (pid != '_curs' && pid != '_temp') {
+					sty = "fill: " + objeto.style.fill + "; stroke: " + objeto.style.stroke + "; stroke-width: " + objeto.style.strokeWidth + "; stroke-linecap: round;stroke-linejoin: round;";
+					puntos = objeto.points;
+					if (puntos) {
+					var ptos = puntos.numberOfItems;
+					var pruta = '';
+					for (var i = 0; i < ptos; i++) {
+						pruta += puntos.getItem(i).x + "," + puntos.getItem(i).y + " ";
+					}
+					fila4d[j] = j + "|" + "checked|polyline|" + pid + "| | |" + pruta + "|" + sty;
+					j++;
+					}
+				}
+			}
+		}
+	}
+}
+function quitablips(texto) {
+	var nodos = document.getElementById("panel4d").childNodes.length - 1;
+	for (var incrementador = nodos; incrementador > 0; incrementador--) {
+		var objeto = document.getElementById("panel4d").childNodes[incrementador];
+		var pid = objeto.id;
+		if (pid) {
+			if (pid.indexOf(texto) >= 0) {
+				document.getElementById("panel4d").removeChild(objeto);
+			}
+		}
+	}
+	blip = 0;
+}
+function poneblips(pid, puntos, fil) {
+	var ptos = puntos.numberOfItems;
+	var pruta = '';
+	for (var incrementador = 0; incrementador < ptos; incrementador++) {
+		blip++;
+		c4d(puntos.getItem(incrementador).x, puntos.getItem(incrementador).y, 1, pid + blip, 'rgba(0,255,0,0.1)', fil, 'panel4d');
+		pruta += puntos.getItem(incrementador).x + "," + puntos.getItem(incrementador).y + " ";
+	}
+}
+function actualiza4d(pcolor){
+	//colorstroke=document.getElementById('incolorborde').value;
+	console.log(pcolor);
+	colorfil="none";
+	if (seleccionado) {
+		seleccionado.style.fill=colorfil;
+		seleccionado.style.stroke=colorstroke;
+		rehacerfila4d();
+	}
+	document.getElementById('ruta').style.stroke=colorstroke;
+	document.getElementById('relleno').style.fill="none";
+	document.getElementById('esqueleto').style.fill=colorstroke;
+	document.getElementById('esqueleto').style.stroke=colorstroke;
+	document.getElementById('atras').style.fill=colorstroke;	
+}
+function c4d(cx, cy, radio, pid, fil, str, pan) {
+	var o4d;
+	if (document.getElementById(pid)) {
+		o4d = document.getElementById(pid);
+	} else {
+		o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+		var antialias = 'true';
+		o4d.setAttribute('shape-rendering', antialias ? 'auto' : 'optimizeSpeed');
+		o4d.setAttribute('id', pid);
+	}
+	if (cx)
+		o4d.setAttribute('cx', cx);
+	if (cy)
+		o4d.setAttribute('cy', cy);
+	if (radio)
+		o4d.setAttribute('r', radio);
+	o4d.setAttribute('fill', fil);
+	o4d.setAttribute('stroke', str);
+	o4d.addEventListener('mouseover', sobremi, false);
+	o4d.addEventListener('mouseout', fuerami, false);
+	if (!document.getElementById(pid)) {
+		document.getElementById(pan).appendChild(o4d);
+	}
+}
+function sobremi(evt) {
+	var target = evt.target;
+	target.setAttributeNS(null, 'style', 'cursor:pointer;cursor:hand;');
+	target.setAttributeNS(null, 'fill', 'red');
+	target.setAttributeNS(null, 'stroke', 'red');
+}
+function fuerami(evt) {
+	var target = evt.target;
+	target.setAttributeNS(null, 'fill', 'rgba(0,255,0,0.1)');
+	target.setAttributeNS(null, 'stroke', 'lime');
+}
+function propiedades4d(objeto) {
+	colorfil='#FFFFFF';
+	colorstroke='#FFFFFF';
+	if(objeto.style.fill!='none'){
+		var hexcol = objeto.style.fill.replaceAll("rgb(", "");
+		hexcol=hexcol.replaceAll(")", "");
+		hexcol=hexcol.replaceAll(" ", "");
+		var colores=hexcol.split(',');
+		var r=parseInt(colores[0]), g=parseInt(colores[1]), b=parseInt(colores[2]);
+		colorfil = rgbToHex(r, g, b);
+	}
+	if(objeto.style.stroke!='none'){
+		var hexcol = objeto.style.stroke.replaceAll("rgb(", "");
+		hexcol=hexcol.replaceAll(")", "");
+		hexcol=hexcol.replaceAll(" ", "");
+		var colores=hexcol.split(',');
+		var r=parseInt(colores[0]), g=parseInt(colores[1]), b=parseInt(colores[2]);
+		colorstroke = rgbToHex(r, g, b);
+	}
+	if(colorfil=="#NaNNaNNaN") {colorfil='#FFFFFF'; }
+	if(colorstroke=="#NaNNaNNaN") {colorstroke='#FFFFFF'; }
+	document.getElementById('incolorborde').value=colorstroke;
+}
+function poli4d(pid, pts, sty) {if (pts.indexOf("undefined")<0 && pts.indexOf("NaN")<0){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); o4d.setAttribute("id", pid); o4d.setAttribute("shape-rendering", "geometricPrecision"); } o4d.setAttribute("points", pts);                                                                                       if (sty !== " ") {o4d.setAttribute("style", sty);}                       if (!document.getElementById(pid)) {document.getElementById("panel4d").appendChild(o4d);}}}
+function componentToHex(c) {var hex = c.toString(16);return hex.length == 1 ? "0" + hex : hex;}
+function rgbToHex(r, g, b) {return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);}
+function p4d(x1, y1, x2, y2, x3, y3, x4, y4) {var divisor = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)); if (divisor === 0) { return { x5: NaN, y5: NaN }; } var x5 = x1 + ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / divisor * (x2 - x1); var y5 = y1 + ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / divisor * (y2 - y1); return { x5: x5, y5: y5 }; }
+function ruta4d(name, pathData, fillColor, strokeColor, strokeWidth) { if (pathData.indexOf("undefined") < 0 && pathData.indexOf("NaN") < 0) { var o4d; if (document.getElementById(name)) { o4d = document.getElementById(name); } else { o4d = document.createElementNS("http://www.w3.org/2000/svg", "path"); o4d.setAttribute("id", name);	o4d.setAttribute("stroke-linecap", "round");} o4d.setAttribute("d", pathData); if (fillColor !== " ") { o4d.setAttribute("fill", fillColor); } if (strokeWidth !== " ") { o4d.setAttribute("stroke-width", strokeWidth); }if (strokeColor !== " ") { o4d.setAttribute("stroke", strokeColor); } if (!document.getElementById(name)) { document.getElementById("panel4d").appendChild(o4d);  }}}
+function circ4d(pid, pcx, pcy, pra, sty){if (!isNaN(pcx) && !isNaN(pcy)){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');  o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid);} o4d.setAttribute('cx', pcx);o4d.setAttribute('cy', pcy); o4d.setAttribute('r', pra);	                            if (sty !== ' ') {o4d.setAttribute('style', sty);}if (!document.getElementById(pid)) {document.getElementById('panel4d').appendChild(o4d);}}}
+function poli4dm(panel, pid, pts, sty) {if (pts.indexOf("undefined")<0 && pts.indexOf("NaN")<0){var o4d;if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline");o4d.setAttribute("id", pid);o4d.setAttribute("shape-rendering", "geometricPrecision"); }o4d.setAttribute("points", pts);                                                                                               if (sty !== " ") {o4d.setAttribute("style", sty);}if (!document.getElementById(pid)) {document.getElementById(panel).appendChild(o4d);}    }}
+function circ4dm(panel, pid, pcx, pcy, pra, sty){if (!isNaN(pcx) && !isNaN(pcy)){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');  o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid);} o4d.setAttribute('cx', pcx);o4d.setAttribute('cy', pcy); o4d.setAttribute('r', pra);	                            if (sty !== ' ') {o4d.setAttribute('style', sty);}if (!document.getElementById(pid)) {document.getElementById(panel).appendChild(o4d);}}}
+function elip4dm(panel, pid, pcx, pcy, prx, pry, sty) {var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse'); o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid);} o4d.setAttribute('cx', pcx);o4d.setAttribute('cy', pcy); o4d.setAttribute('rx', prx); o4d.setAttribute('ry', pry);	if (sty !== ' ') {o4d.setAttribute('style', sty);}if (!document.getElementById(pid)) {document.getElementById(panel).appendChild(o4d);}}
+function text4dm(panel, pid, px, py, sty, txt) {var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "text");    o4d.setAttribute("shape-rendering", "geometricPrecision"); o4d.setAttribute("id", pid);} o4d.setAttribute("x", px);   o4d.setAttribute("y", py);if (sty !== " ") {o4d.setAttribute("style", sty);} o4d.textContent = txt;if (!document.getElementById(pid)) {document.getElementById(panel).appendChild(o4d);}}
+function text4da(pid, px, py, sty, txt, ali) { var o4d; if (document.getElementById(pid)) { o4d = document.getElementById(pid); } else { o4d = document.createElementNS("http://www.w3.org/2000/svg", "text"); o4d.setAttribute("shape-rendering", "geometricPrecision"); o4d.setAttribute("id", pid); } o4d.setAttribute("x", px); o4d.setAttribute("y", py); if (sty !== " ") { o4d.setAttribute("style", sty); } o4d.textContent = txt; if (ali !== "") {if (ali==0){o4d.setAttribute("alignment-baseline", "start");o4d.setAttribute("text-anchor", "start");}if (ali==1){o4d.setAttribute("alignment-baseline", "middle");o4d.setAttribute("text-anchor", "middle");}if (ali==2){o4d.setAttribute("alignment-baseline", "end");o4d.setAttribute("text-anchor", "end"); 	}}if (!document.getElementById(pid)) { document.getElementById("panel4d").appendChild(o4d); } }
+function numeroconcomas(x) {var parts = x.toString().split(".");parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");return parts.join(".");}
+</script>
+</body>
+</html>
