@@ -1,3 +1,4 @@
 # Laboratorio de Inteligencia Artificial
-## Confrontación de modelos tensorflow , Keras, Opencv
+## Combinación de modelos tensorflow , Keras, Opencv para NodeJS y Python
 Editor de vectores gráficos para calcado de imágenes y construcción del dataset
+
