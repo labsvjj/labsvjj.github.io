@@ -88,7 +88,7 @@ if (window.addEventListener) {
     document.getElementById('panel4d').onclick = clicmouse;
 }
 function atras4d() {
-	if (seleccionado) {
+	if (seleccionado && dibujando === 0) {
 		var pid = seleccionado.id;
 		var array;
 		var fila4dtemp = fila4d;
