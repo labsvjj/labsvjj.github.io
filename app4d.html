@@ -1,14 +1,29 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>App4D</title>
-    <style>
-    </style>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head><title>MarIA</title>
+<meta http-equiv = "Expires"      content = "Tue, 25 Abr 1990 09:30:00 -0700">
+<meta http-equiv = "Content-Type" content = "text/html; charset=UTF-8">
+<meta name = "keywords"           content = "Tercera Edad">
+<meta name = "description"        content = "IA para la Tercera Edad">
+<meta name = "Autor"              content = "jorge4d">
+<meta name = "Latitud"            content = "6.336830">
+<meta name = "Longitud"           content = "-75.601475">
+<meta name = "Altitud"            content = "2500.04">
+<meta name = "Momento"            content = "2024/04/28_10:02:00">
+<meta name = "Email"              content = "jorgejuliasanchez@hotmail.com">
+<link rel="shortcut icon" href="4D.ico">
+<style>
+.rotado{transform: rotateY(180deg); -webkit-transform:rotateY(180deg); -moz-transform:rotateY(180deg);}
+body{font-family: Verdana, sans-serif; line-height: 1.5;}
+</style>
+<script src="./libjs/face-api.js"></script>
 </head>
 <body>
-<svg id="panel4d" viewBox="0 0 512 512" style="width:512px; height:512px; position:absolute; left:0; top:0; outline: #C0C0C0FF solid 1px;"></svg>
-<svg      id="hoja4d"                   style="display: block; width: 512px; height: 512px; position: absolute; left: 0; top:  0; outline: silver solid 1px;" viewBox="0 0 512 512">
+<img      id="img4d"      class="rotado"   style='display: block; width: 512px; height: 512px; position: absolute; left: 0; right: 0; top: 0px;  margin: 0 auto;'  width="512px" height="512px" src='maria.jpg'>
+<canvas   id='tempCanvas' class="rotado"   style="display: block; width: 512px; height: 512px; position: absolute; left: 0; right: 0; top: 0px;  margin: 0 auto;"  width="512px" height="512px"></canvas>
+<video    id="video"      class="rotado"   style="display: none;  width: 512px; height: 384px; position: absolute; left: 0; right: 0; top: 64px; margin: 0 auto;background: orange; " playsinline autoplay ></video>
+<canvas   id='myCanvas4D' class="rotado"   style="display: block; width: 384px; height: 384px; position: absolute; left: 0; right: 0; top: 64px; margin: 0 auto; " width="384px" height="384px"></canvas>
+<svg      id="panel4d"    class="rotado"   style="display: block; width: 512px; height: 512px; position: absolute; left: 0; right: 0; top:  0px; margin: 0 auto; outline: silver solid 1px;" viewBox="0 0 512 512"></svg>
+<svg      id="hoja4d"                      style="display: block; width: 512px; height: 512px; position: absolute; left: 0; right: 0; top:  0px; margin: 0 auto; outline: silver solid 1px;" viewBox="0 0 512 512">
     <text id="X"           x="68"  y="18"  style="fill: silver; stroke: none; stroke-width: 1; font-family:monospace; font-size:18px" shape-rendering="geometricPrecision" ></text>
     <text id="Y"           x="446" y="18"  style="fill: silver; stroke: none; stroke-width: 1; font-family:monospace; font-size:18px" shape-rendering="geometricPrecision" direction="rtl" unicode-bidi="embed" ></text>
     <text id="Z"           x="446" y="508" style="fill: silver; stroke: none; stroke-width: 1; font-family:monospace; font-size:18px" shape-rendering="geometricPrecision" direction="rtl" unicode-bidi="embed" ></text>
@@ -104,41 +119,646 @@
     </form>
 </div>
 <script>
-var puntodefuga = {x:256, y:256}; // centro del SVG
-var anchobal = 32;
-var x4 = 448;
-var pasos = Math.floor(x4/anchobal);
-var minx = 64, maxx = 448, miny = 64, maxy = 448;
-var data4d = [313.59999999999997, 313.6901408450704, 313.7805642633229, 313.87127158555734, 313.9622641509434, 314.0535433070866, 314.1451104100946, 314.2369668246445, 314.32911392405066, 314.4215530903328, 314.5142857142857, 314.6073131955485, 314.70063694267515, 314.7942583732057, 314.88817891373805, 314.9824, 315.0769230769231, 315.17174959871585, 315.2668810289389, 315.3623188405797, 315.458064516129, 315.5541195476575, 315.65048543689323, 315.74716369529983, 315.84415584415586, 315.94146341463414, 316.0390879478827, 316.13703099510604, 316.2352941176471, 316.3338788870704, 316.4327868852459, 316.53201970443354, 316.63157894736844, 316.7314662273476, 316.83168316831683, 316.9322314049587, 317.0331125827815, 317.13432835820896, 317.2358803986711, 317.3377703826955, 317.44, 317.54257095158596, 317.6454849498328, 317.748743718593, 317.8523489932886, 317.9563025210084, 318.06060606060606, 318.1652613827993, 318.27027027027026, 318.3756345177665, 318.48135593220337, 318.5874363327674, 318.6938775510204, 318.8006814310051, 318.90784982935156, 319.0153846153846, 319.1232876712329, 319.2315608919383, 319.340206185567, 319.44922547332186, 319.5586206896552, 319.6683937823834, 319.7785467128028, 319.8890814558059, 320, 320.11130434782604, 320.2229965156794, 320.33507853403137, 320.4475524475524, 320.56042031523646, 320.6736842105263, 320.7873462214411, 320.90140845070425, 321.015873015873, 321.13074204947, 321.24601769911504, 321.36170212765956, 321.47779751332155, 321.5943060498221, 321.71122994652404, 321.8285714285714, 321.9463327370304, 322.06451612903226, 322.1831238779174, 322.30215827338134, 322.4216216216216, 322.54151624548734, 322.66184448462934, 322.7826086956522, 322.9038112522686, 323.0254545454545, 323.1475409836065, 323.27007299270076, 323.3930530164534, 323.5164835164835, 323.64036697247707, 323.7647058823529, 323.88950276243094, 324.01476014760146, 324.1404805914972, 324.26666666666665, 324.39332096474953, 324.52044609665427, 324.64804469273747, 324.77611940298505, 324.9046728971963, 325.03370786516854, 325.16322701688557, 325.29323308270676, 325.42372881355936, 325.55471698113206, 325.6862003780718, 325.8181818181818, 325.9506641366224, 326.0836501901141, 326.21714285714285, 326.35114503816794, 326.4856596558318, 326.62068965517244, 326.7562380038388, 326.89230769230767, 327.028901734104, 327.16602316602314, 327.3036750483559, 327.4418604651163, 327.58058252427185, 327.7198443579766, 327.859649122807, 328, 328.1409001956947, 328.28235294117644, 328.4243614931238, 328.56692913385825, 328.7100591715976, 328.85375494071144, 328.9980198019802, 329.1428571428571, 329.2882703777336, 329.43426294820716, 329.5808383233533, 329.728, 329.875751503006, 330.0240963855422, 330.1730382293763, 330.3225806451613, 330.4727272727273, 330.62348178137654, 330.77484787018255, 330.9268292682927, 331.0794297352342, 331.2326530612245, 331.3865030674847, 331.54098360655735, 331.6960985626283, 331.85185185185185, 332.00824742268037, 332.1652892561983, 332.32298136645966, 332.48132780082983, 332.64033264033264, 332.79999999999995, 332.9603340292275, 333.12133891213387, 333.2830188679245, 333.4453781512605, 333.60842105263157, 333.77215189873414, 333.9365750528541, 334.10169491525426, 334.26751592356686, 334.4340425531915, 334.6012793176972, 334.7692307692308, 334.93790149892936, 335.10729613733906, 335.2774193548387, 335.44827586206895, 335.6198704103672, 335.7922077922078, 335.9652928416486, 336.1391304347826, 336.3137254901961, 336.48908296943233, 336.66520787746174, 336.8421052631579, 337.0197802197802, 337.19823788546256, 337.37748344370857, 337.5575221238938, 337.73835920177385, 337.92, 338.10244988864144, 338.2857142857143, 338.4697986577181, 338.6547085201794, 338.84044943820226, 339.02702702702703, 339.21444695259595, 339.4027149321267, 339.59183673469386, 339.78181818181815, 339.9726651480638, 340.16438356164383, 340.3569794050343, 340.55045871559633, 340.7448275862069, 340.9400921658986, 341.13625866050813, 341.33333333333337, 341.53132250580046, 341.7302325581395, 341.9300699300699, 342.13084112149534, 342.3325526932084, 342.53521126760563, 342.7388235294118, 342.9433962264151, 343.1489361702128, 343.3554502369668, 343.56294536817103, 343.77142857142854, 343.98090692124106, 344.1913875598086, 344.40287769784175, 344.61538461538464, 344.8289156626506, 345.04347826086956, 345.2590799031477, 345.4757281553398, 345.6934306569343, 345.91219512195124, 346.13202933985326, 346.3529411764706, 346.5749385749386, 346.79802955665025, 347.02222222222224, 347.2475247524753, 347.47394540942923, 347.7014925373134, 347.930174563591, 348.15999999999997, 348.390977443609, 348.62311557788945, 348.85642317380353, 349.0909090909091, 349.326582278481, 349.56345177664974, 349.80152671755724, 350.0408163265306, 350.2813299232737, 350.5230769230769, 350.7660668380463, 351.0103092783505, 351.25581395348837, 351.5025906735751, 351.7506493506493, 352, 352.2506527415144, 352.5026178010471, 352.755905511811, 353.0105263157895, 353.2664907651715, 353.5238095238095, 353.7824933687003, 354.04255319148933, 354.304, 354.5668449197861, 354.83109919571046, 355.0967741935484, 355.3638814016173, 355.63243243243244, 355.9024390243902, 356.17391304347825, 356.44686648501363, 356.72131147540983, 356.9972602739726, 357.27472527472526, 357.55371900826447, 357.83425414364643, 358.1163434903047, 358.4, 358.6852367688022, 358.97206703910615, 359.26050420168065, 359.55056179775283, 359.84225352112674, 360.135593220339, 360.4305949008499, 360.72727272727275, 361.025641025641, 361.3257142857143, 361.6275071633238, 361.9310344827586, 362.23631123919307, 362.5433526011561, 362.8521739130435, 363.16279069767444, 363.4752186588921, 363.7894736842105, 364.10557184750735, 364.4235294117647, 364.7433628318584, 365.06508875739644, 365.38872403560833, 365.7142857142857, 366.0417910447761, 366.37125748502996, 366.7027027027027, 367.03614457831327, 367.3716012084592, 367.7090909090909, 368.048632218845, 368.390243902439, 368.73394495412845, 369.079754601227, 369.4276923076923, 369.77777777777777, 370.13003095975233, 370.48447204968943, 370.8411214953271, 371.2, 371.5611285266458, 371.92452830188677, 372.2902208201893, 372.65822784810126, 373.0285714285714, 373.4012738853503, 373.77635782747603, 374.15384615384613, 374.5337620578778, 374.9161290322581, 375.3009708737864, 375.68831168831167, 376.07817589576547, 376.47058823529414, 376.8655737704918, 377.2631578947368, 377.66336633663366, 378.0662251655629, 378.4717607973422, 378.88, 379.2909698996655, 379.7046979865772, 380.1212121212121, 380.5405405405405, 380.9627118644068, 381.38775510204084, 381.81569965870307, 382.24657534246575, 382.680412371134, 383.11724137931037, 383.55709342560556, 384, 384.4459930313589, 384.8951048951049, 385.34736842105264, 385.80281690140845, 386.26148409893995, 386.72340425531917, 387.1886120996441, 387.65714285714284, 388.1290322580645, 388.6043165467626, 389.08303249097474, 389.5652173913044, 390.0509090909091, 390.54014598540147, 391.032967032967, 391.52941176470586, 392.02952029520293, 392.5333333333333, 393.04089219330854, 393.55223880597015, 394.0674157303371, 394.5864661654135, 395.1094339622642, 395.6363636363636, 396.16730038022814, 396.7022900763359, 397.2413793103448, 397.7846153846154, 398.33204633204633, 398.8837209302326, 399.4396887159533, 400, 400.56470588235294, 401.13385826771656, 401.70750988142294, 402.2857142857143, 402.8685258964143, 403.456, 404.04819277108436, 404.64516129032256, 405.246963562753, 405.8536585365854, 406.46530612244896, 407.08196721311475, 407.7037037037037, 408.3305785123967, 408.9626556016598, 409.6, 410.2426778242678, 410.890756302521, 411.54430379746833, 412.20338983050846, 412.868085106383, 413.53846153846155, 414.2145922746781, 414.8965517241379, 415.5844155844156, 416.2782608695652, 416.9781659388646, 417.6842105263158, 418.3964757709251, 419.11504424778764, 419.84, 420.57142857142856, 421.30941704035877, 422.05405405405406, 422.80542986425337, 423.56363636363636, 424.32876712328766, 425.10091743119267, 425.88018433179724, 426.6666666666667, 427.46046511627907, 428.2616822429907, 429.07042253521126, 429.8867924528302, 430.71090047393363, 431.54285714285714, 432.38277511961724, 433.2307692307692, 434.0869565217391, 434.9514563106796, 435.8243902439024, 436.70588235294116, 437.5960591133005, 438.4950495049505, 439.4029850746269, 440.32, 441.2462311557789, 442.1818181818182, 443.1269035532995, 444.0816326530612, 445.04615384615386, 446.02061855670104, 447.00518134715026, 448];
-
-for(var i=0; i<=(pasos); i++){
-    var x = parseInt(x4-i*anchobal);
-    var y = data4d[x];
-    var p1 = data4d[x] + ',' + y;
-    var p2 = data4d[x] + ',' + ((maxy + miny) - y);
-    var p3 = ((maxx + minx) - data4d[x]) + ',' + data4d[x];
-    var p4 = ((maxx + minx) - data4d[x]) + ',' + ((maxy + miny) - y);
-    var pruta = p1 + ' ' + p2 + ' ' + p4 + ' ' + p3 + ' ' + p1;
-    sty = 'fill: rgba(0,0,255,0.15); stroke: rgba(0,0,255,0.15); stroke-width: 0.2; stroke-linecap: round; stroke-linejoin: round;';
-    poli4d('l'+i, pruta,sty);
-    styc = 'fill: orange; stroke: none; stroke-width: 0.001; stroke-linecap: round;stroke-linejoin: round;';
-    //circ4d('puntoid' + i, data4d[x], y                                  , 2, styc);
-    //circ4d('puntosd' + i, data4d[x], (maxy + miny) - y                  , 2, styc);
-	//circ4d('puntosi' + i, ((maxx + minx) - data4d[x]), data4d[x]        , 2, styc);
-    //circ4d('puntoss' + i, ((maxx + minx) - data4d[x]), (maxy + miny) - y, 2, styc);
+const video   = document.getElementById('video');
+var canvas    = document.getElementById("myCanvas4D"); 
+var canvas4d  = canvas.getContext("2d");
+var tempCanvas = document.createElement("canvas");
+var tempCtx = tempCanvas.getContext("2d");
+var dataURL = "";
+var izquierda, arriba, ancho, alto, lado;
+recuadro();
+function recuadro(){
+    svgRect = document.getElementById('panel4d').getBoundingClientRect();
+    izquierda = svgRect.left;
+    arriba    = svgRect.top;
+    ancho     = svgRect.width;
+    alto      = svgRect.height;
 }
-window.onload=panel();
-//window.addEventListener('resize', function (event) {panel();});
+window.onload=panel();window.addEventListener('resize', function (event) { panel(); });
 function panel() {
-	ancho = Math.max(document.documentElement.clientWidth,  window.innerWidth);
-	alto  = Math.max(document.documentElement.clientHeight, window.innerHeight)-2; 
-	if (ancho > alto) { lado = alto; } else { lado = ancho; }
-	document.getElementById('panel4d').setAttribute('style', 'position:absolute; left: 0; top: 0; width:' + lado + 'px;height:' + lado + 'px;');
-    document.getElementById('hoja4d').setAttribute('style', 'position:absolute; left: 0; top: 0; width:' + lado + 'px;height:' + lado + 'px;');
+    ancho = Math.max(document.documentElement.clientWidth,  window.innerWidth);
+    alto  = Math.max(document.documentElement.clientHeight, window.innerHeight)-2; 
+    if (ancho > alto) { lado = alto; } else { lado = ancho; }
+    document.getElementById('img4d').setAttribute(     'style', 'position:absolute; left: 0; right: 0; top: 0; margin:0 auto; outline: silver solid 1px;  width:' + lado + 'px;height:' + lado + 'px;');
+    document.getElementById('tempCanvas').setAttribute('style', 'position:absolute; left: 0; right: 0; top: 0; margin:0 auto; outline: silver solid 1px;  width:' + lado + 'px;height:' + lado + 'px;');
+    document.getElementById('panel4d').setAttribute(   'style', 'position:absolute; left: 0; right: 0; top: 0; margin:0 auto; outline: silver solid 1px;  width:' + lado + 'px;height:' + lado + 'px;');
+    document.getElementById('video').setAttribute(     'style', 'position:absolute; left: 0; right: 0; top: 0px; margin: 0 auto; width:' + Math.round(lado) + 'px;height:' + Math.round(lado) + 'px;');
+    document.getElementById('hoja4d').setAttribute(    'style', 'position:absolute; left: 0; right: 0; top: 0px; margin: 0 auto; width:' + lado + 'px;height:' + lado + 'px;');
+    document.getElementById('myCanvas4D').setAttribute('style', 'position:absolute; left: 0; right: 0; top: ' + Math.round(lado / 8) + 'px; margin: 0 auto; width:' + Math.round(lado * 0.75) + 'px;height:' + Math.round(lado * 0.75) + 'px;');
+    document.getElementById('divconfig').setAttribute( 'style', 'background-color: white; display: none; position:absolute; left: 0;right: 0;top: ' + Math.round(lado / 8) + 'px; margin: 0 auto; width:' + Math.round(lado * 0.75) + 'px;height:' + Math.round(lado * 0.75) + 'px;');
+    recuadro();
 }
-function circ4d(pid, pcx, pcy, pra, sty){if (!isNaN(pcx) && !isNaN(pcy)){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');  o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid);} o4d.setAttribute('cx', pcx);o4d.setAttribute('cy', pcy); o4d.setAttribute('r', pra);	                            if (sty !== ' ') {o4d.setAttribute('style', sty);}if (!document.getElementById(pid)) {document.getElementById('panel4d').appendChild(o4d);}}}
-function poli4d(pid, pts, sty) {if (pts.indexOf("undefined")<0 && pts.indexOf("NaN")<0){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); o4d.setAttribute("id", pid); o4d.setAttribute("shape-rendering", "geometricPrecision"); } o4d.setAttribute("points", pts);if (sty !== " ") {o4d.setAttribute("style", sty);}if (!document.getElementById(pid)) {document.getElementById("panel4d").appendChild(o4d);}}}
+
+var pusuario  = "Tu", platitud  = "0", plongitud = "0", paltitud  = "0", pinstante  = "0", pfechanac  = "0";
+var pmensaje   ='Soy María, tu inteligencia Artificial';
+main();
+function main() {
+    fetch('/config')
+    .then((response) => {if (!response.ok) {throw new Error('No se pudo obtener la configuración');} return response.json(); })
+    .then((config) => {    pusuario   = config.Usuario;     platitud   = config.Latitud;     plongitud  = config.Longitud;     paltitud   = config.Altitud;     pinstante  = config.Instante;     pfechanac  = config.FechaNac;     })
+    .catch((error) => {console.error('Error al obtener la configuración:', error); });
+}
+
+var prendido       = 0;
+var reconoceactivo = 0;  
+var canvasactivo   = 0; 
+var micactivo      = 0;
+var rednactivo     = 0;
+var testactivo     = 0;
+var configactivo   = 0;
+var videoactivo    = 0;
+
+function hablar(texto){
+  document.getElementById("robot1").textContent=document.getElementById("robot3").textContent;
+  document.getElementById("robot3").textContent=texto;
+  let msg = new SpeechSynthesisUtterance(texto); 
+  msg.lang = "es";
+  speechSynthesis.speak(msg);
+}
+Promise.all([
+    faceapi.nets.tinyFaceDetector.loadFromUri('/models/tiny_face_detector_model-weights_manifest.json'),
+    faceapi.nets.faceLandmark68Net.loadFromUri('/models/face_landmark_68_model-weights_manifest.json'),
+    faceapi.nets.faceRecognitionNet.loadFromUri('/models/face_recognition_model-weights_manifest.json'),
+    faceapi.nets.faceExpressionNet.loadFromUri('/models/face_expression_model-weights_manifest.json'),
+    faceapi.nets.ageGenderNet.loadFromUri('/models/age_gender_model-weights_manifest.json')
+    ]).then(() => { pulso(); });
+function getCurrentTime() {  return performance.now();}
+function pulso(timestamp) {
+    if(reconoceactivo ===1){
+        detectFaces()
+    };
+    const timeInMilliseconds = getCurrentTime();
+    document.getElementById('T').textContent = numeroconcomas((timeInMilliseconds/1000).toFixed(3));
+    requestAnimationFrame(pulso);
+}
+if (window.addEventListener) { document.addEventListener('keydown', teclas, false); } else { document.onkeydown = teclas; }
+function teclas(e) { e = window.event || e; ejecutar(e.keyCode); }
+function ejecutar(este) {
+	ptecla = '', ptec = '';
+	if ((este == 96  || este == 48 || este == 80))  {ptecla = '0'; ptec = '96';  iniciar();   }
+	if ((este == 97  || este == 35))                {ptecla = '1'; ptec = '97';  video4d();   }
+	if ((este == 98  || este == 40))                {ptecla = '2'; ptec = '98';  reconoce4d();}
+	if ((este == 99  || este == 34 || este == 84))  {ptecla = '3'; ptec = '99';	 pcanvas4d(); }
+	if ((este == 100 || este == 37 || este == 73))  {ptecla = '4'; ptec = '100'; redn4d();    }
+	if ((este == 101 || este == 12))                {ptecla = '5'; ptec = '101'; test4d();    }
+	if ((este == 102 || este == 39))                {ptecla = '6'; ptec = '102'; config4d();  }
+	if ((este == 103 || este == 36 || este == 73))  {ptecla = '7'; ptec = '103'; microfono4d()}
+	if ((este == 104 || este == 38))                {ptecla = '8'; ptec = '104'; }
+	if ((este == 105 || este == 33 || este == 90))  {ptecla = '9'; ptec = '105'; }
+	if ((este == 65  || este == 76 || este == 109)) {ptecla = 'A'; ptec = '65';  }
+	if ((este == 66  || este == 82 || este == 107)) {ptecla = 'B'; ptec = '66';  }
+	if ((este == 67  || este == 83 || este == 106)) {ptecla = 'C'; ptec = '67';  }
+	if ((este == 68  || este == 111))               {ptecla = 'D'; ptec = '68';  }
+	if ((este == 69  || este == 13))                {ptecla = 'E'; ptec = '69';  }
+	if ((este == 70  || este == 46 || este == 110)) {ptecla = 'F'; ptec = '70';  }
+}
+function iniciar(){
+  if (prendido==0){
+    prendido=1;    
+    document.getElementById("circulo1").style.stroke = 'red';
+	document.getElementById("palo1").style.fill = 'red';
+    hablar(pmensaje);
+    document.getElementById('X').textContent = "Lon " + plongitud + "°";    
+    document.getElementById('Y').textContent = "Lat " + platitud  + "°";    
+    document.getElementById('Z').textContent = "Alt " + paltitud  + "mt";    
+    document.getElementById('T').textContent = "Tim " + pinstante;
+    fetch('/saludo').then(response => response.text()).then(mensaje    => {hablar(mensaje + " " + pusuario)}).catch(error => {console.error('Supervisar', error);});
+    fetch('/instante').then(response => response.text()).then(mensaje  => {hablar("hoy es " + mensaje);}).catch(error     => {console.error('Supervisar', error);});
+    videoactivo   = 0; video4d(); 
+    micactivo     = 0; microfono4d();
+    reconoceactivo= 0; reconoce4d();
+    canvasactivo  = 0; pcanvas4d();
+  } else {        
+	document.getElementById("circulo1").style.stroke = 'silver';
+	document.getElementById("palo1").style.fill = 'silver';
+    prendido=0;        
+	speechSynthesis.cancel();
+    videoactivo=1; video4d(); 
+    micactivo=1; microfono4d();
+    reconoceactivo=1; reconoce4d();
+    canvasactivo=1; pcanvas4d();
+  }
+}
+function cambiarColorConfig(color) {
+    document.getElementById("cirpinon").style.stroke = color;
+    document.getElementById("pinon").style.fill = color;
+    document.getElementById("pinon").style.stroke = color;
+}
+function config4d() {     
+    if (configactivo == 1) {        
+        configOFF();        
+        configactivo = 0;   
+        document.getElementById("divconfig").style.display="none"; 
+        cambiarColorConfig('silver');      
+    } else {        
+        configON();
+        configactivo = 1;
+        document.getElementById("divconfig").style.display="block"; 
+        cambiarColorConfig('red');
+    }
+}
+function configON() {
+    fetch('/config')
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('No se pudo obtener la configuración');
+            }
+            return response.json();
+        })
+        .then((config) => {
+            document.getElementById('usuario').value = config.Usuario;
+            document.getElementById('latitud').value = config.Latitud;
+            document.getElementById('longitud').value = config.Longitud;
+            document.getElementById('altitud').value = config.Altitud;
+            document.getElementById('instante').value = config.Instante;
+            document.getElementById('fechanac').value = config.FechaNac;
+        })
+        .catch((error) => {
+            console.error('Error al obtener la configuración:', error);
+        });
+}
+function configOFF() {
+}
+const ubica = () => {
+    if (!"geolocation" in navigator) { }
+    const onUbicacionConcedida = ubicacion => {
+        lat = - ubicacion.coords.latitude;
+        lon = ubicacion.coords.longitude;
+        document.getElementById('latitud').value = lat;
+        document.getElementById('longitud').value = lon;
+    }
+    const onErrorDeUbicacion = err => {
+        document.getElementById('latitud').value = "err";
+        document.getElementById('longitud').value = "err";
+    }
+    const opcionesDeSolicitud = {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 5000
+    };
+    navigator.geolocation.getCurrentPosition(onUbicacionConcedida, onErrorDeUbicacion, opcionesDeSolicitud);
+};
+function grabaconfig(){
+    let usuario = document.getElementById('usuario').value;
+    let latitud = document.getElementById('latitud').value;
+    let longitud = document.getElementById('longitud').value;
+    let altitud = document.getElementById('altitud').value;
+    let instante = document.getElementById('instante').value;
+    let fechanac = document.getElementById('fechanac').value;
+
+    let config = {
+        Usuario: usuario,
+        Latitud: latitud,
+        Longitud: longitud,
+        Altitud: altitud,
+        Instante: instante,
+        FechaNac: fechanac
+    };
+
+    fetch('/grabaconfig', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(config),
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error('Error al grabar la configuración');
+        }
+        return response.text();
+    })
+    .then((message) => {
+        console.log(message);
+    })
+    .catch((error) => {
+        console.error('Error al grabar la configuración:', error);
+    });
+}
+
+function video4d(){     
+    if (videoactivo==1){        
+        videoOFF();        
+        video.style.display="none"; 
+        document.getElementById("camara").style.stroke = 'silver';        
+        videoactivo=0;         
+    } else {        
+        videoON();
+        video.style.display="block";     
+        document.getElementById("camara").style.stroke = 'red';   
+        videoactivo=1;         
+    }
+}
+const constraints = { audio: false,video: { width: { ideal: 512 }, height: { ideal: 384 } }};
+var localstream, elId;
+async function videoON() {try { const stream = await navigator.mediaDevices.getUserMedia(constraints); exitosa(stream); } catch (e) { alert(`navigator.getUserMedia error:${e.toString()}`);    }}
+function exitosa(stream) { window.stream = stream; video.srcObject = stream; localstream = stream;}
+function videoOFF(){ video.pause();  video.currentTime = 0; localstream.getTracks()[0].stop(); }
+
+function captura(detecciones) {
+
+    var nombredearchivo1 = pusuario;
+    var registro = new Date();
+    var fecha = registro.getFullYear() + "/" + ('0' + (registro.getMonth() + 1)).slice(-2) + "/" + ('0' + registro.getDate()).slice(-2);
+    fecha += "_" + ('0' + registro.getHours()).slice(-2) + ":" + ('0' + registro.getMinutes()).slice(-2) + ":" +  ('0' + registro.getSeconds()).slice(-2);
+    let lmk = detecciones.landmarks.positions.map(obj => [obj._x, obj._y+64]);
+    var htm = "<html><head><title>" + pusuario + "</title>" +
+        "<meta name='Autor' content='Agente4D' />" + 
+        "<meta name='Topico' content='train4d' />" +
+        "<meta name='Entidad' content='SVJJ' />" +
+        "<meta name='lat' content='" + platitud + "' />" +
+        "<meta name='lon' content='" + plongitud + "' />" +
+        "<meta name='alt' content='" + paltitud + "' />" +
+        "<meta name='tim' content='" + fecha + "' />" +
+        "<meta name='nac' content='" + pfechanac + "' />" +
+        "<meta name='score' content='" + detecciones.detection.score  + "' />" +
+        "<meta name='happy' content='" + detecciones.expressions.happy  + "' />" +      
+        "<meta name='surprised' content='" + detecciones.expressions.surprised  + "' />" + 
+        "<meta name='neutral' content='" + detecciones.expressions.neutral  + "' />" + 
+        "<meta name='sad' content='" + detecciones.expressions.sad  + "' />" +
+        "<meta name='angry' content='" + detecciones.expressions.angry  + "' />" +
+        "<meta name='disgusted' content='" + detecciones.expressions.disgusted  + "' />" +
+        "<meta name='fearful' content='" + detecciones.expressions.fearful  + "' />" +
+        "<meta name='age' content='" + detecciones.age  + "' />" +
+        "<meta name='des' content='" + detecciones.descriptor + "' />" +
+        "<meta name='lmk' content='" + lmk  + "' />" +
+        "</head><body style='margin:0;padding:0;'>"+
+        "<img style='position:absolute; left:0px;top:0px;width:512px;height:512px;' src='" +dataURL + "'>"+
+        "<svg style='position:absolute; left:0px;top:0px;width:512px;height:512px;' id='panel4d'>" +
+        document.getElementById('panel4d').innerHTML.trim() +
+        "</svg></body></html>";    
+    var parametros = "htm=" + encodeURIComponent(htm) + "&nombre=" + encodeURIComponent(nombredearchivo1) ;
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("POST", "/capture", true);
+    xmlHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xmlHttp.onreadystatechange = function() {  
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)  { 
+            console.log(xmlHttp.responseText);  
+        }
+    }
+    xmlHttp.send(parametros);
+}
+function reconoce4d(){
+    if (reconoceactivo==1){        
+        reconoceactivo=0;         
+        let elementos = ['bsilueta', 'bcejai', 'bcejad', 'bnariz', 'bojoi', 'bojod', 'bbocae', 'bbocai'];
+        elementos.forEach(function(elemento) {
+            let obj = document.getElementById(elemento);
+            if (obj) { obj.style.stroke = 'black'; }
+        });        
+    } else {        
+        reconoceactivo=1;     
+        let elementos = ['bsilueta', 'bcejai', 'bcejad', 'bnariz', 'bojoi', 'bojod', 'bbocae', 'bbocai'];
+        elementos.forEach(function(elemento) {
+            let obj = document.getElementById(elemento);
+            if (obj) { obj.style.stroke = 'red'; }
+        });   
+    }
+}
+async function detectFaces() {
+    var sty="",sty1="";
+    canvas4d.drawImage(video, 64, 0, 384, 384, 0, 0, 384, 384);
+    const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptors().withFaceExpressions().withAgeAndGender();
+    if (detections[0]) {
+        canvas4d.drawImage(video, 64, 0, 384, 384, 0, 0, 384, 384);
+        sty  ='fill: lime; stroke: black; font-family: Verdana;font-size:20px';
+        sty1 ='fill: none ; stroke: lime; stroke-width: 1; stroke-linecap: round;stroke-linejoin:  round;';
+        if ((detections[0].detection.score * 100)>90 ) {
+            if ((detections[0].expressions.neutral * 100)>90 ) {
+                tempCanvas.width = 512;
+                tempCanvas.height = 512;
+                tempCtx.drawImage(canvas, 0, 0, 384, 384, 64, 64, 384, 384);
+                dataURL = tempCanvas.toDataURL("image/png");
+                sty='fill: red; stroke: red; font-family: Verdana;font-size:20px';
+                sty1 ='fill: none ; stroke: red; stroke-width: 1; stroke-linecap: round;stroke-linejoin:  round;';
+                lineas(detections[0].landmarks.positions,sty1); 
+                captura(detections[0]);
+            }
+        }
+        text4d('score', 458, 56, sty, ' ');
+        text4d('happy', 458, 120, sty, ' ');
+        text4d('surprised', 458, 184, sty, ' ');
+        text4d('neutral', 458, 248, sty, ' ');
+        text4d('sad', 458, 312, sty, ' ');
+        text4d('angry', 458, 376, sty, ' ');
+        text4d('disgusted', 458, 440, sty, ' ');
+        text4d('fearful', 458, 504, sty, ' ');
+        text4d('age', 350, 488, sty, ' ');
+        if(detections[0].detection.score>0.1){text4d('score',           458,  56, sty, parseInt(detections[0].detection.score       * 100) + '%');}
+        if(detections[0].expressions.happy>0.1){text4d('happy',         458, 120, sty, parseInt(detections[0].expressions.happy     * 100) + '%');}
+        if(detections[0].expressions.surprised>0.1){text4d('surprised', 458, 184, sty, parseInt(detections[0].expressions.surprised * 100) + '%');}
+        if(detections[0].expressions.neutral>0.1){text4d('neutral',     458, 248, sty, parseInt(detections[0].expressions.neutral   * 100) + '%');}     
+        if(detections[0].expressions.sad>0.1){text4d('sad',             458, 312, sty, parseInt(detections[0].expressions.sad       * 100) + '%');}    
+        if(detections[0].expressions.angry>0.1){text4d('angry',         458, 376, sty, parseInt(detections[0].expressions.angry     * 100) + '%');}        
+        if(detections[0].expressions.disgusted>0.1){text4d('disgusted', 458, 440, sty, parseInt(detections[0].expressions.disgusted * 100) + '%');}
+        if(detections[0].expressions.fearful>0.1){text4d('fearful',     458, 504, sty, parseInt(detections[0].expressions.fearful   * 100) + '%');}
+        lineas(detections[0].landmarks.positions,sty1); 
+    } else {
+        canvas4d.fillStyle = 'white';
+        canvas4d.fillRect(0, 0, canvas.width, canvas.height);
+    }
+}
+function dibujacanvas(){
+     //var imageData = canvas4d.getImageData(0, 0, 384, 384);
+    //var data = imageData.data;
+    //for(var i = 0; i < data.length; i += 4) {
+    //    var red = data[i];
+    //    var green = data[i + 1];
+    //    var blue = data[i + 2];
+    //    if(!(red > 95 && green > 40 && blue > 20 && red-green > 15 && red > blue && green > blue)) {
+    //        data[i] = data[i + 1] = data[i + 2] = 255;
+    //    }
+    //}
+    //canvas4d.putImageData(imageData, 0, 0);
+}
+function lineas(posiciones,estilo) {
+    let p = posiciones.map(obj => [obj._x, obj._y+64]);
+    pruta = ''; for (var i = 0; i <= 16; i++)  { pruta += p[i][0] + ',' + p[i][1] + ' ' }; poli4dp('__silueta', pruta, estilo);
+    pruta = ''; for (var i = 17; i <= 21; i++) { pruta += p[i][0] + ',' + p[i][1] + ' ' }; poli4dp('__cejai', pruta, estilo);
+    pruta = ''; for (var i = 22; i <= 26; i++) { pruta += p[i][0] + ',' + p[i][1] + ' ' }; poli4dp('__cejad', pruta, estilo);
+    pruta = ''; for (var i = 27; i <= 35; i++) { pruta += p[i][0] + ',' + p[i][1] + ' ' }; poli4dp('__nariz', pruta, estilo);
+    pruta = ''; for (var i = 36; i <= 41; i++) { pruta += p[i][0] + ',' + p[i][1] + ' ' }; pruta += p[36][0] + ',' + p[36][1]; poli4dp('__ojoi', pruta, estilo);
+    pruta = ''; for (var i = 42; i <= 47; i++) { pruta += p[i][0] + ',' + p[i][1] + ' ' }; pruta += p[42][0] + ',' + p[42][1]; poli4dp('__ojod', pruta, estilo);
+    pruta = ''; for (var i = 48; i <= 59; i++) { pruta += p[i][0] + ',' + p[i][1] + ' ' }; pruta += p[48][0] + ',' + p[48][1]; poli4dp('__bocae', pruta, estilo);
+    pruta = ''; for (var i = 60; i <= 67; i++) { pruta += p[i][0] + ',' + p[i][1] + ' ' }; pruta += p[60][0] + ',' + p[60][1]; poli4dp('__bocai', pruta, estilo);
+}
+
+function calculaedad(fechanac) {
+  const today = new Date();
+  const birthYear = new Date(fechanac).getFullYear();
+  let age = today.getFullYear() - birthYear;
+  if (today.getMonth() < new Date(fechanac).getMonth()) {
+    age--;
+  } else if (today.getMonth() == new Date(fechanac).getMonth() && today.getDate() <= new Date(fechanac).getDate()) {
+    age--;
+  }
+  return age;
+}
+
+
+function cambiarColorTest(color) {
+    document.getElementById("cirtest").style.stroke = color;
+	document.getElementById("chulito").style.fill = color;
+
+}
+function test4d() {     
+    if (testactivo == 1) {        
+        testOFF();        
+        testactivo = 0;   
+        cambiarColorTest('black');      
+    } else {        
+        testON();
+        testactivo = 1;
+        cambiarColorTest('red');
+    }
+}
+
+function testON() {
+}
+function testOFF() {
+}
+
+function cambiarColorRedN(color) {
+    for (i = 1; i < 3; i++) {
+        for (j = 1; j <= 3; j++) {
+            for (k = 1; k <= 3; k++) {
+                nombre2 = 'w' + j + i + k + (i + 1);
+                document.getElementById(nombre2).style.stroke = color;
+            }
+        }
+    }
+    for ( i = 1; i <= 3; i++) {
+        for (j = 1; j <= 3; j++) {
+            nombre = 'n' + j + i;
+            document.getElementById(nombre).style.stroke = color;
+        }
+    }
+}
+function redn4d() {     
+    if (rednactivo == 1) {        
+        rednOFF();        
+        rednactivo = 0;   
+        cambiarColorRedN('black');      
+    } else {        
+        rednON();
+        rednactivo = 1;
+        cambiarColorRedN('red');
+    }
+}
+
+async function rednON() {
+	speechSynthesis.cancel();
+    video.style.display="none"; 
+    document.getElementById("camara").style.stroke = 'black';        
+    videoactivo=0;   
+    //videoactivo=1; video4d(); 
+    micactivo=1; microfono4d();
+    reconoceactivo=1; reconoce4d();
+    canvasactivo=1; pcanvas4d();
+    async function cargarNombresArchivos() {
+    const response = await fetch('/dataset/htm');
+    const data = await response.json();
+
+    const listaOrdenada = document.createElement('ul');
+    data.sort(); // Ordenar alfabéticamente
+    let currentIndex = 0;
+
+    function procesarArchivo() {
+        if (currentIndex < data.length) {
+            const nombreArchivo = data[currentIndex];
+            const nombreSinExtension = nombreArchivo.replace('.htm', '');
+            callapi4d(nombreSinExtension);
+            currentIndex++;
+            //requestAnimationFrame(procesarArchivo);
+            setTimeout(procesarArchivo, 17);
+        } else {
+            currentIndex = 0;
+            console.log('Procesamiento completo');
+            setTimeout(procesarArchivo, 17);
+        }
+    }
+    requestAnimationFrame(procesarArchivo);
+    }
+    cargarNombresArchivos();
+    var nodo = '/caras/';
+    function callapi4d(objeto) {
+        // limpia4d();
+        theUrl = nodo + objeto;
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                pinta4d(xmlHttp.responseText);
+            }
+        }; xmlHttp.open("GET", theUrl, true);
+        xmlHttp.send(null);
+    }
+    function pinta4d(rta) {
+        parser = new DOMParser();
+        xmlDoc = parser.parseFromString(rta, "text/xml");
+        sty='fill: red; stroke: red; font-family: Verdana;font-size:20px';
+        text4d('score', 458, 56, sty, ' ');
+        text4d('happy', 458, 120, sty, ' ');
+        text4d('surprised', 458, 184, sty, ' ');
+        text4d('neutral', 458, 248, sty, ' ');
+        text4d('sad', 458, 312, sty, ' ');
+        text4d('angry', 458, 376, sty, ' ');
+        text4d('disgusted', 458, 440, sty, ' ');
+        text4d('fearful', 458, 504, sty, ' ');
+        text4d('age', 350, 488, sty, ' ');
+        var metas = xmlDoc.getElementsByTagName("head")[0].getElementsByTagName("meta");
+        for (var i = 0; i < metas.length; i++) {
+            var metaName = metas[i].getAttribute("name");
+            var metaContent = metas[i].getAttribute("content");
+            switch(metaName) {
+                case 'score':
+                    if(parseInt(metaContent * 100) > 9){text4d('score', 458, 56, sty, parseInt(metaContent* 100) + '%');}
+                    break;
+                case 'happy':
+                    if(parseInt(metaContent * 100) > 9){text4d('happy', 458, 120, sty, parseInt(metaContent* 100) + '%');}
+                    break;
+                case 'surprised':
+                    if(parseInt(metaContent * 100) > 9){text4d('surprised', 458, 184, sty, parseInt(metaContent* 100) + '%');}
+                    break;
+                case 'neutral':
+                    if(parseInt(metaContent * 100) > 9){text4d('neutral', 458, 248, sty, parseInt(metaContent* 100) + '%');}
+                    break;
+                case 'sad':
+                    if(parseInt(metaContent * 100) > 9){text4d('sad', 458, 312, sty, parseInt(metaContent* 100) + '%');}
+                    break;
+                case 'angry':
+                    if(parseInt(metaContent * 100) > 9){text4d('angry', 458, 376, sty, parseInt(metaContent* 100) + '%');}
+                    break;
+                case 'disgusted':
+                    if(parseInt(metaContent * 100) > 9){text4d('disgusted', 458, 440, sty, parseInt(metaContent* 100) + '%');}
+                    break;
+                case 'fearful':
+                    if(parseInt(metaContent * 100) > 9){text4d('fearful', 458, 504, sty, parseInt(metaContent* 100) + '%');}
+                    break;
+                case 'age':
+                    if(parseInt(metaContent * 100) > 9){text4d('age', 350, 488, sty, parseInt(metaContent) + ' años');}
+                    break;
+                case 'des':
+                // console.log(metaContent);
+                    break;
+                case 'lmk':
+                // console.log(metaContent);
+                    break;
+                case 'lat':
+                    document.getElementById('Y').textContent = metaContent;
+                    break;
+                case 'lon':
+                    document.getElementById('X').textContent = metaContent;
+                    break;
+                case 'alt':
+                    document.getElementById('Z').textContent = metaContent;
+                    break;
+                case 'tim':
+                    document.getElementById('T').textContent = metaContent;
+                    break;
+                case 'nac':
+                    //console.log(calculaedad(metaContent));
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        var imagen4d = xmlDoc.getElementsByTagName("img")[0].getAttribute("src");
+        document.getElementById("img4d").src= imagen4d;
+        var pviewbox = xmlDoc.getElementsByTagName("svg")[0].getAttribute("viewBox");
+        if (pviewbox) { document.getElementById('hoja4d').setAttribute('viewBox', pviewbox); };
+        var tg = xmlDoc.getElementsByTagName("svg")[0].childNodes;
+        for (i = 0; i < tg.length; i++) {
+            if (tg[i]) {
+                if (tg[i].nodeName === "polyline") {
+                    poli4d(tg[i].getAttribute('id'), tg[i].getAttribute('points'), tg[i].getAttribute('style'));
+                }
+                if (tg[i].nodeName === "circle") {
+                    circ4d(tg[i].getAttribute('id'), tg[i].getAttribute('cx'), tg[i].getAttribute('cy'), tg[i].getAttribute('r'), tg[i].getAttribute('style'))
+                }
+                if (tg[i].nodeName === "text") {
+                    text4d(tg[i].getAttribute('id'), tg[i].getAttribute('x'), tg[i].getAttribute('y'), tg[i].getAttribute('style'), tg[i].textContent)
+                }
+            }
+        }
+    }
+}
+function rednOFF() {
+}
+
+function pcanvas4d(){     
+    if (canvasactivo==1){        
+        canvas.style.display="none"; 
+        document.getElementById("canvasicon").style.stroke = 'black';             
+        canvasactivo=0;         
+    } else {        
+        canvas.style.display="block";     
+        document.getElementById("canvasicon").style.stroke = 'red';
+        canvasactivo=1;         
+    }
+}
+
+
+
+function cambiarColorMicrofono(color) {
+    document.getElementById("elipse1").style.stroke = color;
+    document.getElementById("elipse2").style.fill = color;
+    document.getElementById("palo2").style.fill = color;         
+    document.getElementById("palo2").style.stroke = color;
+}
+function microfono4d() {     
+    if (micactivo == 1) {        
+        microfonoOFF();        
+        micactivo = 0;   
+        cambiarColorMicrofono('black');      
+    } else {        
+        microfonoON();
+        micactivo = 1;
+        cambiarColorMicrofono('red');
+    }
+}
+
+let recognition;
+function microfonoON() {
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if ('SpeechRecognition' in window) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'es-ES';
+        //recognition.continuous = true;
+        recognition.onstart = () => {
+            cambiarColorMicrofono('red');
+        };
+        recognition.onresult = (event) => {
+            document.getElementById('subtitulos2').textContent = document.getElementById('subtitulos1').textContent;
+            cambiarColorMicrofono('black');
+            const transcript = event.results[0][0].transcript;
+            document.getElementById('subtitulos1').textContent = transcript;
+        };   
+        recognition.onend = () => {
+            cambiarColorMicrofono('black');
+            if (micactivo == 1) { recognition.start();}
+        };
+        recognition.start();
+    } else {
+        alert('El reconocimiento de voz no es compatible.');
+    }        
+}
+function microfonoOFF() {
+    document.getElementById('subtitulos1').textContent = "";
+    document.getElementById('subtitulos2').textContent = "";
+    if (recognition) {
+        recognition.stop();
+    }
+}
+
+function poli4dp(pid, pts, sty) { if (pts.indexOf('undefined') < 0 && pts.indexOf('NaN') < 0) { var o4d; if (document.getElementById(pid)) { o4d = document.getElementById(pid); } else { o4d = document.createElementNS('http://www.w3.org/2000/svg', 'polyline'); o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid); } o4d.setAttribute('points', pts); if (sty !== ' ') { o4d.setAttribute('style', sty); } if (!document.getElementById(pid)) { document.getElementById('panel4d').appendChild(o4d); }    }}
+
+function poli4d(pid, pts, sty) {if (pts.indexOf("undefined")<0 && pts.indexOf("NaN")<0){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); o4d.setAttribute("id", pid); o4d.setAttribute("shape-rendering", "geometricPrecision"); } o4d.setAttribute("points", pts);                                                                                       if (sty !== " ") {o4d.setAttribute("style", sty);}                       if (!document.getElementById(pid)) {document.getElementById("hoja4d").appendChild(o4d);}}}
+function circ4d(pid, pcx, pcy, pra, sty){if (!isNaN(pcx) && !isNaN(pcy)){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');  o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid);} o4d.setAttribute('cx', pcx);	o4d.setAttribute('cy', pcy); o4d.setAttribute('r', pra);	                            if (sty !== ' ') {o4d.setAttribute('style', sty);}	                     if (!document.getElementById(pid)) {document.getElementById('hoja4d').appendChild(o4d);}}}
+function elip4d(pid, pcx, pcy, prx, pry, sty)                                          {var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse'); o4d.setAttribute('shape-rendering', 'geometricPrecision'); o4d.setAttribute('id', pid);} o4d.setAttribute('cx', pcx);	o4d.setAttribute('cy', pcy); o4d.setAttribute('rx', prx); o4d.setAttribute('ry', pry);	if (sty !== ' ') {o4d.setAttribute('style', sty);}	                     if (!document.getElementById(pid)) {document.getElementById('hoja4d').appendChild(o4d);}}
+function text4d(pid, px, py, sty, txt)                                                 {var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "text");    o4d.setAttribute("shape-rendering", "geometricPrecision"); o4d.setAttribute("id", pid);} o4d.setAttribute("x", px);   o4d.setAttribute("y", py);                                                                if (sty !== " ") {o4d.setAttribute("style", sty);} o4d.textContent = txt;if (!document.getElementById(pid)) {document.getElementById("hoja4d").appendChild(o4d);}}
+
+function numeroconcomas(numero) {var parts = numero.toString().split("."); parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");	return parts.join(".");}
 </script>
 </body>
 </html>
-
