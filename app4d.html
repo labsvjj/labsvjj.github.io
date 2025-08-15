@@ -222,8 +222,8 @@ function iniciar(){
     document.getElementById('Y').textContent = "Lat " + platitud  + "°";    
     document.getElementById('Z').textContent = "Alt " + paltitud  + "mt";    
     document.getElementById('T').textContent = "Tim " + pinstante;
-    fetch('/saludo').then(response => response.text()).then(mensaje    => {hablar(mensaje + " " + pusuario)}).catch(error => {console.error('Supervisar', error);});
-    fetch('/instante').then(response => response.text()).then(mensaje  => {hablar("hoy es " + mensaje);}).catch(error     => {console.error('Supervisar', error);});
+    //fetch('/saludo').then(response => response.text()).then(mensaje    => {hablar(mensaje + " " + pusuario)}).catch(error => {console.error('Supervisar', error);});
+    //fetch('/instante').then(response => response.text()).then(mensaje  => {hablar("hoy es " + mensaje);}).catch(error     => {console.error('Supervisar', error);});
     videoactivo   = 0; video4d(); 
     micactivo     = 0; microfono4d();
     reconoceactivo= 0; reconoce4d();
