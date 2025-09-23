@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToDo4D</title>
+</head>
+<body style="margin: 0; padding: 0;">
+<span id="ventana">
+    <iframe id="frame4d" src="ano.html"></iframe>
+</span>
+<span id="publicidad"></span>
+<script>
+window.onload=frame();
+//window.addEventListener('resize', function (event) {frame();});
+function frame() {
+	ancho = Math.max(document.documentElement.clientWidth,  window.innerWidth);
+	alto  = Math.max(document.documentElement.clientHeight, window.innerHeight)-2; 
+	if (ancho > alto) { lado = alto; } else { lado = ancho; }
+	document.getElementById('frame4d').setAttribute('style', 'position:absolute; left: 0; top: 0; width:' + lado + 'px;height:' + lado + 'px;');
+}
+</script>
+</body>
+</html>
