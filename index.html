@@ -5,14 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ToDo4D</title>
 </head>
-<body style="margin: 0; padding: 0;">
+<body style="margin: 0; padding: 0; background-color: black;">
 <span id="ventana">
     <iframe id="frame4d" src="ano.html"></iframe>
 </span>
 <span id="publicidad"></span>
 <script>
+    var html = [
+'ano.html',
+'mes.html',
+'dia.html',
+'America4D.html',
+'Andes4D.html',
+'Medellin4D.html',
+'gotera4d.html',
+'ver4d.html'
+    ];
+var i = 0;
+pulso();
+function pulso(){   
+    document.getElementById('frame4d').src= html[i];
+    console.log(html[i]);
+    i++;
+    if (i>=html.length){i = 0 }
+	//requestAnimationFrame(pulso);
+    setTimeout(pulso, 2000);
+}
 window.onload=frame();
-//window.addEventListener('resize', function (event) {frame();});
+window.addEventListener('resize', function (event) {frame();});
 function frame() {
 	ancho = Math.max(document.documentElement.clientWidth,  window.innerWidth);
 	alto  = Math.max(document.documentElement.clientHeight, window.innerHeight)-2; 
