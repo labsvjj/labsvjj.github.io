@@ -4,41 +4,189 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ToDo4D</title>
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        background: #000;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+    }
+
+    /* contenedor centrado que mantiene un cuadro (square) */
+    #viewport {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        perspective: 900px; /* necesaria para efecto de profundidad */
+        will-change: width, height;
+        overflow: visible;
+    }
+
+    /* stack de iframes (solo uno visible plenamente a la vez) */
+    .frame {
+        position: absolute;
+        left: 0; top: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        transform-origin: 50% 50%;
+        transition: transform 800ms cubic-bezier(.2,.9,.25,1), opacity 800ms cubic-bezier(.2,.9,.25,1), filter 800ms;
+        will-change: transform, opacity, filter;
+        background: #111;
+    }
+
+    /* estado inicial cuando entra desde el fondo */
+    .init {
+        transform: scale(0.6) translateY(40px) translateZ(-200px);
+        opacity: 0;
+        filter: blur(4px) saturate(.9);
+        z-index: 1;
+    }
+
+    /* estado visible frontal */
+    .visible {
+        transform: scale(1) translateY(0) translateZ(0);
+        opacity: 1;
+        filter: blur(0) saturate(1);
+        z-index: 2;
+    }
+
+    /* estado de salida hacia frente y desaparición */
+    .exit {
+        transform: scale(1.12) translateY(-24px) translateZ(40px);
+        opacity: 0;
+        filter: blur(2px) saturate(.95);
+        z-index: 0;
+    }
+
+    /* pequeño borde visible y sombreado para distinguir el cuadro */
+    #viewport { box-shadow: 0 0 40px rgba(0,0,0,.6); }
+    .frame::after { display: none; }
+</style>
 </head>
-<body style="margin: 0; padding: 0; background-color: black;">
-<span id="ventana">
-    <iframe id="frame4d" src="ano.html"></iframe>
-</span>
-<span id="publicidad"></span>
+<body>
+<div id="viewport"></div>
+
 <script>
-    var html = [
-'ano.html',
-'mes.html',
-'dia.html',
-'America4D.html',
-'Andes4D.html',
-'Medellin4D.html',
-'gotera4d.html',
-'ver4d.html'
-    ];
+/* Lista de páginas a rotar */
+var html = [
+    'ano.html',
+    'mes.html',
+    'dia.html',
+    'America4D.html',
+    'Andes4D.html',
+    'Medellin4D.html',
+    'gotera4d.html',
+    'ver4d.html'
+];
+
 var i = 0;
-pulso();
-function pulso(){   
-    document.getElementById('frame4d').src= html[i];
-    console.log(html[i]);
+var viewport = document.getElementById('viewport');
+var currentFrame = null;
+var rotating = true;
+var intervalMs = 2500; // tiempo por página
+var transitionMs = 800; // debe coincidir con CSS transition
+
+/* Crea un iframe con clases iniciales */
+function makeIframe(src) {
+    var ifr = document.createElement('iframe');
+    ifr.className = 'frame init';
+    ifr.setAttribute('src', src);
+    ifr.setAttribute('loading', 'lazy');
+    ifr.setAttribute('allowfullscreen','');
+    return ifr;
+}
+
+/* Ajusta tamaño del viewport para mantener un cuadro centrado */
+function layout() {
+    var vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    var vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+    // Lado del cuadro: máximo posible que quepa en la ventana (cuadrado)
+    var side = Math.min(vw, vh);
+    // Mantener un margen visual en pantallas pequeñas
+    var margin = Math.round(Math.min(24, side * 0.03));
+    side = Math.max(128, side - margin * 2);
+
+    viewport.style.width = side + 'px';
+    viewport.style.height = side + 'px';
+}
+
+/* Ejecuta la transición: el nuevo iframe entra desde el fondo, el actual sale */
+function showNext() {
+    if (!rotating) return;
+
+    var src = html[i];
+    var next = makeIframe(src);
+    viewport.appendChild(next);
+
+    // Forzar reflow para asegurar que la transición se active
+    // eslint-disable-next-line no-unused-expressions
+    next.offsetWidth;
+
+    // in/out class swap to animate
+    if (currentFrame) {
+        currentFrame.classList.remove('visible');
+        currentFrame.classList.add('exit');
+    }
+    next.classList.remove('init');
+    next.classList.add('visible');
+
+    // cuando termine la transición del frame entrante, eliminar el antiguo
+    var cleanup = function (ev) {
+        // Sólo ejecutar para el iframe que entró (ev.target === next)
+        if (ev && ev.target !== next) return;
+        // remover listener
+        next.removeEventListener('transitionend', cleanup);
+        // quitar antiguo si existe
+        if (currentFrame && currentFrame.parentNode) {
+            try { currentFrame.parentNode.removeChild(currentFrame); } catch (e) { /* ignore */ }
+        }
+        currentFrame = next;
+    };
+    next.addEventListener('transitionend', cleanup);
+
+    // fallback por si transitionend no se dispara
+    setTimeout(function () {
+        if (currentFrame && currentFrame.parentNode && currentFrame !== next) {
+            try { currentFrame.parentNode.removeChild(currentFrame); } catch (e) {}
+        }
+        currentFrame = next;
+    }, transitionMs + 120);
+
+    // advance index
     i++;
-    if (i>=html.length){i = 0 }
-	//requestAnimationFrame(pulso);
-    setTimeout(pulso, 2000);
+    if (i >= html.length) i = 0;
 }
-window.onload=frame();
-window.addEventListener('resize', function (event) {frame();});
-function frame() {
-	ancho = Math.max(document.documentElement.clientWidth,  window.innerWidth);
-	alto  = Math.max(document.documentElement.clientHeight, window.innerHeight)-2; 
-	if (ancho > alto) { lado = alto; } else { lado = ancho; }
-	document.getElementById('frame4d').setAttribute('style', 'position:absolute; left: 0; top: 0; width:' + lado + 'px;height:' + lado + 'px;');
+
+/* Inicializa primera vista sin animación */
+function init() {
+    layout();
+    // crear primer iframe como visible inmediato
+    var first = makeIframe(html[i]);
+    // forzar mostrar directamente
+    first.classList.remove('init');
+    first.classList.add('visible');
+    viewport.appendChild(first);
+    currentFrame = first;
+    i++;
+    if (i >= html.length) i = 0;
+
+    // iniciar ciclo
+    setTimeout(function cycle() {
+        showNext();
+        setTimeout(cycle, intervalMs);
+    }, intervalMs);
 }
+
+/* Eventos de layout */
+window.addEventListener('load', init, false);
+window.addEventListener('resize', layout, false);
+window.addEventListener('orientationchange', function(){ layout(); }, false);
 </script>
 </body>
 </html>
