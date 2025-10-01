@@ -13,8 +13,11 @@ var url = new URL(window.location.href);
 var params = new URLSearchParams(url.search);
 var ano = params.get('ano');
 var mes = params.get('mes');
-if(mes===null){mes = 8, ano = 2025;};
-
+if(mes===null){
+	var hoy = new Date();
+    mes = hoy.getMonth();
+    ano = hoy.getFullYear();
+};
 var diasEnMes = new Date(ano, mes + 1, 0).getDate();
 var primerDia = new Date(ano, mes, 1).getDay(); 
 function nombreDiaActual() {
@@ -22,8 +25,6 @@ function nombreDiaActual() {
 	var hoy = new Date();
 	return dias[hoy.getDay()];
 }
-
-
 var offset = (primerDia === 0) ? 6 : primerDia - 1;
 var mesArr = diasSemana.slice(); 
 for (var i = 0; i < offset; i++) {

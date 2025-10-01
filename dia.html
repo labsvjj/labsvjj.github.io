@@ -19,9 +19,9 @@ if (!sdia){
     var hoy = new Date();
     dia = hoy.getDate().toString();
     sdia = dias[hoy.getDay()];
+    mes = hoy.getMonth();
+    ano = hoy.getFullYear();
 }
-if(mes===null){mes = 8, ano = 2025;};
-
 var festivos = [
 	[1, 6],
 	[], 
