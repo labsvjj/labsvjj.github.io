@@ -4,8 +4,10 @@
 <svg id="panel4d" viewBox="0 0 512 512" preserveAspectRatio="none" style="border: silver solid 1px; position: absolute; left: 0px; top: 0px; width: 512px; height: 512px;">
 </svg>      
 <script>
-var hoy = new Date();	
-var ano = hoy.getFullYear();
+var hoy = new Date();
+xmes = hoy.getMonth();
+ano = hoy.getFullYear();
+xdia = hoy.getDate();
 var ameses= ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 var arreglomes = [];
 var diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
@@ -76,13 +78,13 @@ function gridano(pid, bloquesx, bloquesy, minx, maxx, miny, maxy, margenx, marge
 			var minxm = (pleft + margenx + margenx*j + j*bancho     ), maxxm = (pleft + margenx + margenx*j + (j+1)*bancho ), minym = (ptop  + margeny + margeny*i + i*balto     ), maxym = (ptop  + margeny + margeny*i + (i+1)*balto );
 			var margenxm = 2 , margenym = 1;
 			var pleftm = minxm, ptopm = (ptop  + margeny + margeny*i + i*balto     ) + 14;
-			gridmes(ano+"dias"+contador+" "+j, bloquesxm, bloquesym, minxm, maxxm, minym, maxym, margenxm, margenym, pleftm, ptopm);
+			gridmes(contador, ano+"dias"+contador+" "+j, bloquesxm, bloquesym, minxm, maxxm, minym, maxym, margenxm, margenym, pleftm, ptopm);
 			j++; contador++;
 		}
 		i++;
 	}
 }
-function gridmes(pid, bloquesxm, bloquesym, minxm, maxxm, minym, maxym, margenxm, margenym, pleftm, ptopm){
+function gridmes(pmes, pid, bloquesxm, bloquesym, minxm, maxxm, minym, maxym, margenxm, margenym, pleftm, ptopm){
 	var contador = 0;
 	var registro = new Date();
 	var bancho = (maxxm - margenxm*(bloquesxm+1)-pleftm)/bloquesxm;
@@ -108,36 +110,19 @@ function gridmes(pid, bloquesxm, bloquesym, minxm, maxxm, minym, maxym, margenxm
 
 			var pcolor = 'black';
 			if(j==6){pcolor = 'red';}	
-			// Resalta los días festivos en rojo
-			var mesIdxMatch = pid.match(/dias(\d+)/);
-			var mesIdx = mesIdxMatch ? parseInt(mesIdxMatch[1], 10) : -1;
-			var cellText = (mesIdx >= 0 && mesIdx < arreglomes.length && arreglomes[mesIdx][contador] !== undefined) ? arreglomes[mesIdx][contador] : "";
-			if (
-				mesIdx >= 0 &&
-				cellText !== "" &&
-				festivos[mesIdx] &&
-				festivos[mesIdx].includes(parseInt(cellText, 10))
-			) {
-				pcolor = 'red';
+			for( var fes = 0; fes <(festivos[pmes].length); fes ++){
+				if(festivos[pmes][fes] == arreglomes[pmes][contador]){pcolor = 'red';}
 			}
 			var styt = 'fill: ' + pcolor + '; stroke: none; stroke-width: 1; font-family: Arial; font-size:11px;';
-			// Extraer el número de mes desde el pid (ejemplo: "2025dias2" -> 2)
-			var mesIdxMatch = pid.match(/dias(\d+)/);
-			var mesIdx = mesIdxMatch ? parseInt(mesIdxMatch[1], 10) : -1;
-			var cellText = (mesIdx >= 0 && mesIdx < arreglomes.length && arreglomes[mesIdx][contador] !== undefined) ? arreglomes[mesIdx][contador] : "";
-			text4d('t__'+ pid + contador , pmx, pmy, styt, cellText, 1);
-			// Resalta el día actual si corresponde al mes y día actual
-			var hoy = new Date();
-			if (
-				mesIdx === hoy.getMonth() &&
-				arreglomes[mesIdx][contador] === hoy.getDate().toString()
-			) {
+			text4d('t__'+ pid + contador , pmx, pmy, styt, arreglomes[pmes][contador], 1);
+			if(xmes == pmes && xdia == arreglomes[pmes][contador]){
 				pcolor = 'blue';
+				styt = 'fill: ' + pcolor + '; stroke: none; stroke-width: 1; font-family: Arial; font-size:11px;';
+				text4d('t__'+ pid + contador , pmx, pmy, styt, arreglomes[pmes][contador], 1);
 				blink4d('mes' + pid + contador, "indefinite", 'transparent', 'blue');
 				blink4d('t__'+ pid + contador, "indefinite", pcolor, 'white');
-				botonsvg('mes' + pid + contador ,'mes.html?ano=' + ano + '&mes='+mesIdx); 
+				botonsvg('mes' + pid + contador ,'mes.html?ano=' + ano + '&mes='+pmes); 
 			}
-
 			j++; contador++;
 		}
 		i++;
