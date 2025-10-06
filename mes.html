@@ -91,6 +91,9 @@ function gridmes(pid, bloquesxm, bloquesym, minxm, maxxm, minym, maxym, margenxm
             var pmy = (ptopm  + margenym + margenym*i + i*balto     ) + (((ptopm  + margenym + margenym*i + (i+1)*balto ) - (ptopm  + margenym + margenym*i + i*balto     ))/2)+1;
             var pcolor = 'black';
 			if(j==6){pcolor = 'red';}	
+			for( var fes = 0; fes <(festivos[mes].length); fes ++){
+				if(festivos[mes][fes] == arreglomes[0][contador]){pcolor = 'red';}
+			}
             var styt = 'fill: ' + pcolor + '; stroke: none; stroke-width: 1; font-family: Arial; font-size:25px;';
             text4d('t__'+ pid + contador , pmx, pmy, styt, arreglomes[0][contador], 1);
 		    if(arreglomes[0][contador]==hoy){
