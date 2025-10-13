@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="es" xmlns="http://www.w3.org/1999/xhtml">
 <head><title>Cubo4D</title></head>
 <body>
-<svg id="panel4d" viewBox="0 0 512 512" preserveAspectRatio="none" style="outline: #C0C0C0FF solid 1px; position: absolute; left: 0px; top: 0px; width: 512px; height: 512px;"></svg>
+<svg id="panel4d" viewBox="0 0 512 512" preserveAspectRatio="none" style="cursor: none; outline: #C0C0C0FF solid 1px; position: absolute; left: 0px; top: 0px; width: 512px; height: 512px;"></svg>
 <script>
 var panimar;
 var anchobal = 16, contador=0;
@@ -9,20 +9,22 @@ var xmin = 0, ymin = 0, xmax = 512, ymax = 512, zmin = 0, zmax = 256, tmin = 0, 
 var focox = ((xmax - xmin) / 2) + xmin, focoy = ((ymax - ymin) / 2) + ymin;
 var z = anchobal, x = focox, y = focoy, t = 0;
 var puntos = [], minx = [], miny = [], maxx = [], maxy = [], radio = [];
-//cubo4d(x,y,z,t);
 document.addEventListener("DOMContentLoaded", function(event){panel();});
 window.addEventListener("resize", function (event){panel();});
 function panel() {
 	var ancho = Math.max(document.documentElement.clientWidth,  window.innerWidth);
 	var alto  = Math.max(document.documentElement.clientHeight, window.innerHeight)-2; 
 	if (ancho > alto) { lado = alto; } else { lado = ancho; }
-	document.getElementById('panel4d').setAttribute('style', 'position:absolute; left: 0; top: 0; width:' + ancho + 'px;height:' + alto + 'px;');
+	//document.getElementById('panel4d').setAttribute('style', 'cursor: none; position:absolute; left: 0; top: 0; width:' + lado + 'px;height:' + lado + 'px;');
     matriz4d(); grilla4d();
+	cubo4d(x,y,z,t);
 	animar();
 }
 // animar el tiempo
 function animar() {
 	z = radio[t] ;
+	x = maxx[t] ;
+	y = maxy[t] ;
 	t++;
 	if(t>tmax){t=0}
 	cubo4d(x,y,z,t);
