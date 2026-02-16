@@ -88,8 +88,15 @@ var x = 256, y = 256, factorx = 1, factory = 1;
 var xanterior = x, yanterior = y;
 var izquierda = 0, arriba = 0;
 var pruta ="", sty="", styt="";
+var dibujando = 0, r, pa = '', pi = '', pix, piy, conta = 0, contatext=0, actual='';
+var moviendoblip = '', seleccionado = '', rutaseleccionada, colorfil = 'black', colorstroke = '#000000', grueso = '1';
+var hundido = 0;
 var svg = document.getElementById('panel4d'); 
-window.onload=panel();
+if (window.addEventListener) {
+	window.addEventListener('onload', panel(), false);
+} else {
+	window.onload=panel();
+}
 function panel() {
 	var ancho = Math.max(document.documentElement.clientWidth,  window.innerWidth);	
 	var alto  = Math.max(document.documentElement.clientHeight, window.innerHeight)- 2; 	
@@ -124,6 +131,130 @@ function panel() {
 		document.getElementById("b8").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*7 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
 	}
 }
+// Dibuja
+function poly4d() {
+	if (dibujando == 1) {
+		dibujando = 0;
+		document.getElementById('panel4d').style.cursor = 'default';
+		document.getElementById('b2').className.baseVal = "boton";
+	} else {
+		dibujando = 1;
+		document.getElementById('panel4d').style.cursor = 'none';
+		document.getElementById('b2').className.baseVal = "bactivo";
+	}
+}
+// event listener
+if (window.addEventListener) {
+	svg.addEventListener('mousemove', muevemouse, false);
+	svg.addEventListener('mousedown', abajomouse, false);
+	svg.addEventListener('mouseup', arribamouse, false);
+
+	svg.addEventListener('touchmove', muevetouch, false);
+	svg.addEventListener('touchstart', iniciatouch, false);
+	svg.addEventListener('touchend', fintouch, false);
+} else {
+	svg.onmousemove = muevemouse;
+	svg.onmousedown = abajomouse;
+	svg.onmouseup = arribamouse;
+
+	svg.ontouchmove = muevetouch;
+	svg.ontouchstart = iniciatouch;
+	svg.ontouchend = fintouch;
+	
+}
+function abajomouse(e) {	hundido = 1; pi = ''; ruta = '';
+	e = e || window.event;     var px = e.pageX - izquierda;    var py = e.pageY - arriba;
+    x = parseInt(px * factorx);
+    y = parseInt(py * factory);	
+	if (xanterior == x && yanterior == y){ return };
+	if(hundido==1){dibuja();}
+	xanterior = x, yanterior = y;
+	lapiz4d();
+}	
+function arribamouse(e) {	hundido = 0;}	
+function iniciatouch(e){	hundido = 1; pi = ''; ruta = '';}
+function fintouch(e){	    hundido = 0;}
+// muevetouch
+function muevetouch(e){
+	var touch = e.touches[0];	var px = touch.pageX - izquierda;    var py = touch.pageY - arriba;
+	if (e.touches.length >= 2) {
+		//e.preventDefault();
+		return;
+	}
+	x = parseInt(px * factorx);
+    y = parseInt(py * factory);	
+	if (xanterior == x && yanterior == y){ return };
+	dibuja();
+	lapiz4d();
+	e.preventDefault();
+}
+//mouse mueve 
+function muevemouse(e) {
+    e = e || window.event;     var px = e.pageX - izquierda;    var py = e.pageY - arriba;
+    x = parseInt(px * factorx);
+    y = parseInt(py * factory);	
+	if (xanterior == x && yanterior == y){ return };
+	if(hundido==1){dibuja();}
+	xanterior = x, yanterior = y;
+	lapiz4d();
+}
+function circulo(){
+	var radio = 1; 
+	var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle"); 
+	circle.setAttribute("cx", x); 
+	circle.setAttribute("cy", y); 
+	circle.setAttribute("r", radio); 
+	circle.setAttribute("stroke", "none"); 
+	circle.setAttribute("fill", "red"); 
+	svg.appendChild(circle);
+}
+function dibuja(){
+	sty = "fill: " + colorfil + "; stroke: " + colorstroke + "; stroke-width: " + grueso + "; stroke-linecap: round;stroke-linejoin: round;";
+	if (pi === '') {
+		actual = 'Vector' + conta;
+		conta++;
+		while (document.getElementById(actual)) {
+			actual = 'Vector' + conta;
+			conta++;
+		}
+		pix = x;
+		piy = y;
+		pi = x + ',' + y;	
+		pa = pi;
+		ruta = pa;
+		poli4d(actual, ruta, sty);
+		seleccionado = document.getElementById(actual);
+	} else {
+		circulo();
+		ruta = ruta + ',' + x + ',' + y;
+		poli4d(actual, (ruta + ',' + pix + ',' + piy), sty);
+	}
+	pa = x + ',' + y;
+}
+function trespuntosados(p1,p2,p3){
+	var x1 = parseInt(p1.split(',')[0]);
+	var y1 = parseInt(p1.split(',')[1]);
+	var x2 = parseInt(p2.split(',')[0]);
+	var y2 = parseInt(p2.split(',')[1]);
+	var x3 = parseInt(p3.split(',')[0]);
+	var y3 = parseInt(p3.split(',')[1]);
+	var m1 = (y2 - y1) / (x2 - x1);
+	var m2 = (y3 - y2) / (x3 - x2);
+	if (m1 == m2) {
+		return true;
+	} else {
+		return false;
+	}
+
+}
+function lapiz4d(){
+	pruta = x + "," + y + " " + (x) + "," + (y - 2) + "," + (x + 7) + "," + (y - 7) + "," + (x + 9) + "," + (y - 5) + "," + (x + 2) + "," + (y) + "," + x + "," + y;
+	var pcolor = "yellow";
+	sty = 'fill: ' + pcolor + '; stroke: black; stroke-width: 0.333; stroke-linecap: round; stroke-linejoin: round;';
+	poli4d("_lapiz", pruta, sty);
+}
+//funciones
+function poli4d(pid, pts, sty) {if (pts.indexOf("undefined")<0 && pts.indexOf("NaN")<0){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); o4d.setAttribute("id", pid); o4d.setAttribute("shape-rendering", "geometricPrecision"); } o4d.setAttribute("points", pts);if (sty !== " ") {o4d.setAttribute("style", sty);}if (!document.getElementById(pid)) {document.getElementById("panel4d").appendChild(o4d);}}}
 
 </script>	
 </body>
