@@ -185,6 +185,7 @@ function abajomouse(e) {
 function arribamouse(e) {	
 	hundido = 0;
 	poly4d();
+	seleccione(seleccionado);
 }	
 function iniciatouch(e){	
 	hundido = 1; pi = ''; ruta = '';
@@ -192,6 +193,7 @@ function iniciatouch(e){
 function fintouch(e){	    
 	hundido = 0;
 	poly4d();
+	seleccione(seleccionado);
 }
 // muevetouch
 function muevetouch(e){
@@ -240,6 +242,91 @@ function cli() {
 			pa = x + ',' + y;
 		}
 	}
+}
+function seleccione(objetivo) {
+	limpiar4d();
+	if (objetivo.nodeName !== 'svg') {
+		seleccionado = objetivo;
+		if (objetivo.nodeName === 'polyline') {
+			rutaseleccionada = objetivo.points;
+			colorfil = objetivo.style.fill;
+			colorstroke = objetivo.style.stroke;
+			if (colorstroke == 'rgb(0, 0, 0)') {
+				colorstroke = '#000000'
+			}
+			grueso = objetivo.style.strokeWidth;
+			poneblips('__4Dblip', objetivo.points, 'lime');
+			propiedades4d(seleccionado);
+		}
+	}
+}
+function poneblips(pid, puntos, fil) {
+	var ptos = puntos.numberOfItems;
+	var pruta = '';
+	for (var incrementador = 0; incrementador < ptos; incrementador++) {
+		blip++;
+		c4d(puntos.getItem(incrementador).x, puntos.getItem(incrementador).y, 3, pid + blip, 'rgba(0,255,0,0.1)', fil, 'panel4d');
+		pruta += puntos.getItem(incrementador).x + "," + puntos.getItem(incrementador).y + " ";
+	}
+}
+function c4d(cx, cy, radio, pid, fil, str, pan) {
+	var o4d;
+	if (document.getElementById(pid)) {
+		o4d = document.getElementById(pid);
+	} else {
+		o4d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+		var antialias = 'true';
+		o4d.setAttribute('shape-rendering', antialias ? 'auto' : 'optimizeSpeed');
+		o4d.setAttribute('id', pid);
+	}
+	if (cx)
+		o4d.setAttribute('cx', cx);
+	if (cy)
+		o4d.setAttribute('cy', cy);
+	if (radio)
+		o4d.setAttribute('r', radio);
+	o4d.setAttribute('fill', fil);
+	o4d.setAttribute('stroke', str);
+	o4d.addEventListener('mouseover', sobremi, false);
+	o4d.addEventListener('mouseout', fuerami, false);
+	if (!document.getElementById(pid)) {
+		document.getElementById(pan).appendChild(o4d);
+	}
+}
+function sobremi(evt) {
+	var target = evt.target;
+	target.setAttributeNS(null, 'style', 'cursor:pointer;cursor:hand;');
+	target.setAttributeNS(null, 'fill', 'red');
+	target.setAttributeNS(null, 'stroke', 'red');
+}
+function fuerami(evt) {
+	var target = evt.target;
+	target.setAttributeNS(null, 'fill', 'rgba(0,255,0,0.1)');
+	target.setAttributeNS(null, 'stroke', 'lime');
+}
+function propiedades4d(objeto) {
+	colorfil=objeto.style.fill;
+	colorstroke=objeto.style.stroke;
+	document.getElementById('ruta').style.stroke=colorstroke;
+	document.getElementById('relleno').style.fill=colorfil;
+	document.getElementById('atras').style.fill=colorstroke;
+}
+function limpiar4d() {
+	quitablips('__4Dblip');
+	seleccionado = '';
+}
+function quitablips(texto) {
+	var nodos = document.getElementById("panel4d").childNodes.length - 1;
+	for (var incrementador = nodos; incrementador > 0; incrementador--) {
+		var objeto = document.getElementById("panel4d").childNodes[incrementador];
+		var pid = objeto.id;
+		if (pid) {
+			if (pid.indexOf(texto) >= 0) {
+				document.getElementById("panel4d").removeChild(objeto);
+			}
+		}
+	}
+	blip = 0;
 }
 //funciones
 function poli4d(pid, pts, sty) {if (pts.indexOf("undefined")<0 && pts.indexOf("NaN")<0){var o4d; if (document.getElementById(pid)) {o4d = document.getElementById(pid);} else {o4d = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); o4d.setAttribute("id", pid); o4d.setAttribute("shape-rendering", "geometricPrecision"); } o4d.setAttribute("points", pts);if (sty !== " ") {o4d.setAttribute("style", sty);}if (!document.getElementById(pid)) {document.getElementById("panel4d").appendChild(o4d);}}}
