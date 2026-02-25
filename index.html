@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">    
+<title>LabSVJJ</title>
+<meta       name = "Instante"     content = "20260216094700100"/>
+<meta       name = "Latitud"      content = "6.3370°"/>
+<meta       name = "Longitud"     content = "-75.6015°"/>
+<meta       name = "Altitud"      content = "2500mt."/>
+<meta       name = "Autor"        content = "jorge4d"/>
+<meta       name = "Email"        content = "labsvjj@gmail.com"/>
+<meta       name = "keywords"     content = "Laboratorio IA "/>
+<meta       name = "description"  content = "Laboratorio de Inteligencia Artificial"/>
+<meta       name = "viewport"     content = "width=device-width, initial-scale=1.0">
+<meta http-equiv = "Expires"      content = "Tue, 25 Abr 1990 09:30:00 -0700"/>
+<meta http-equiv = "encoding"     content = "utf-8"/>
+<style>.boton       {outline: black solid 1px; background-color: #d7d7d7;}.boton:hover {background-color: rgb(128,128,128);}.bactivo     {background-color: yellow;}</style>
+</head>
+<body>
+<iframe    id="frame4d"   src="TourEsculturas.html" style="position: absolute; left: 0px; top: 0px; width: 512px; height: 512px;">
+</iframe>
+<svg    id="b1" onclick=""             class="boton" viewBox="0 0 64 64"   style="cursor: pointer;cursor: hand; position: absolute; width: 64px; height: 64px; top: 0px; left: 512px;"></svg>
+<svg    id="b2" onclick="poly4d()"     class="boton" viewBox="0 0 64 64"   style="cursor: pointer;cursor: hand; position: absolute; width: 64px; height: 64px; top: 64px; left: 512px;"></svg>
+<svg    id="b3" onclick="colorear4d()" class="boton" viewBox="0 0 64 64"   style="cursor: pointer;cursor: hand; position: absolute; width: 64px; height: 64px; top: 128px; left: 512px;"></svg>
+<svg    id="b4" onclick="atras4d()"    class="boton" viewBox="0 0 64 64"   style="cursor: pointer;cursor: hand; position: absolute; width: 64px; height: 64px; top: 192px; left: 512px;"></svg>
+<svg    id="b5" onclick="atras4d()"    class="boton" viewBox="0 0 64 64"   style="cursor: pointer;cursor: hand; position: absolute; width: 64px; height: 64px; top: 256px; left: 512px;"></svg>
+<svg    id="b6" onclick="colorpic4d()" class="boton" viewBox="0 0 64 64"   style="cursor: pointer;cursor: hand; position: absolute; width: 64px; height: 64px; top: 320px; left: 512px;"></svg>
+<svg    id="b7" onclick=""             class="boton" viewBox="0 0 64 64"   style="cursor: pointer;cursor: hand; position: absolute; width: 64px; height: 64px; top: 384px; left: 512px;"></svg>
+<svg    id="b8" onclick="salv4d()"     class="boton" viewBox="0 0 64 64"   style="cursor: pointer;cursor: hand; position: absolute; width: 64px; height: 64px; top: 448px; left: 512px;"></svg>
+<script>
+var x = 256, y = 256, factorx = 1, factory = 1;
+var xanterior = x, yanterior = y;
+var izquierda = 0, arriba = 0;
+var pruta ="", sty="", styt="";
+var frame4d = document.getElementById('frame4d'); 
+if (window.addEventListener) {
+	window.addEventListener('onload', panel(), false);
+} else {
+	window.onload=panel();
+}
+function panel() {
+	var ancho = Math.max(document.documentElement.clientWidth,  window.innerWidth) - 4;	
+	var alto  = Math.max(document.documentElement.clientHeight, window.innerHeight)- 4; 	
+	var orientacion = "horizontal";
+	if (ancho > alto) { lado = alto; } else { lado = ancho; orientacion = "vertical"; }	
+	frame4d.setAttribute('style', 'position: absolute; display: block; left: 0px; top: 0px; outline: silver solid 1px; width:' + lado + 'px;height:' + lado + 'px;');
+	var rect = frame4d.getBoundingClientRect();
+	izquierda = rect.left;
+	arriba = rect.top;
+	factorx = 512/rect.width;
+	factory = 512/rect.height;
+	var lado8 = (lado/8);
+	if(orientacion == "horizontal") {
+		document.getElementById("b1").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*0 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+		document.getElementById("b2").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*1 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+		document.getElementById("b3").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*2 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+		document.getElementById("b4").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*3 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+		document.getElementById("b5").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*4 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+		document.getElementById("b6").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*5 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+		document.getElementById("b7").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*6 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+		document.getElementById("b8").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*7 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+	} else {
+		document.getElementById("b1").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*0 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+		document.getElementById("b2").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*1 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+		document.getElementById("b3").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*2 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+		document.getElementById("b4").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*3 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+		document.getElementById("b5").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*4 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+		document.getElementById("b6").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*5 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+		document.getElementById("b7").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*6 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+		document.getElementById("b8").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*7 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
+	}
+}
+</script>  
+</body>
+</html>
