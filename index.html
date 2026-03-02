@@ -34,17 +34,17 @@
 </svg>
 <svg    id="b4" onclick="document.getElementById('frame4d').src='ano.html'"  class="boton" viewBox="0 0 64 64"   style="cursor: pointer;cursor: hand; position: absolute; width: 64px; height: 64px; top: 192px; left: 512px;">
 	<text shape-rendering="geometricPrecision" id="proyecto" x="32" y="20" alignment-baseline="middle" style="cursor: pointer; cursor: hand; fill: black; stroke: rgb(34, 139, 34); stroke-width: 0.5; font-family: Verdana;font-size :10px ; dominant-baseline :middle ; text-anchor :middle ">Año</text>
-	<text shape-rendering="geometricPrecision" id="proyecto" x="32" y="40" alignment-baseline="middle" style="cursor: pointer; cursor: hand; fill:black ; stroke: rgb(34, 139, 34); stroke-width :0.5; font-family: Verdana;font-size :10px ; dominant-baseline :middle ; text-anchor :middle ">2026</text>
+	<text shape-rendering="geometricPrecision" id="Ano" x="32" y="40" alignment-baseline="middle" style="cursor: pointer; cursor: hand; fill:black ; stroke: rgb(34, 139, 34); stroke-width :0.5; font-family: Verdana;font-size :10px ; dominant-baseline :middle ; text-anchor :middle ">2026</text>
 </svg>
 <svg    id="b5" onclick="document.getElementById('frame4d').src='mes.html'"   class="boton" viewBox="0 0 64 64"   style="cursor: pointer;cursor: hand; position: absolute; width: 64px; height: 64px; top: 256px; left: 512px;">
 	<text shape-rendering="geometricPrecision" id="proyecto" x="32" y="20" alignment-baseline="middle" style="cursor: pointer; cursor: hand; fill: black; stroke: rgb(34, 139, 34); stroke-width: 0.5; font-family: Verdana;font-size :10px ; dominant-baseline :middle ; text-anchor :middle ">Mes</text>
-    <text shape-rendering="geometricPrecision" id="proyecto" x="32" y="40" alignment-baseline="middle" style="cursor: pointer; cursor: hand; fill:black ; stroke: rgb(34, 139, 34); stroke-width :0.5; font-family: Verdana;font-size :10px ; dominant-baseline :middle ; text-anchor :middle ">Marzo</text>
+    <text shape-rendering="geometricPrecision" id="Mes" x="32" y="40" alignment-baseline="middle" style="cursor: pointer; cursor: hand; fill:black ; stroke: rgb(34, 139, 34); stroke-width :0.5; font-family: Verdana;font-size :10px ; dominant-baseline :middle ; text-anchor :middle ">Marzo</text>
 </svg>
 
 <svg    id="b6" onclick="document.getElementById('frame4d').src='dia.html'" class="boton" viewBox="0 0 64 64"   style="cursor: pointer;cursor: hand; position: absolute; width: 64px; height: 64px; top: 320px; left: 512px;">
 	<text shape-rendering="geometricPrecision" id="proyecto" x="32" y="10" alignment-baseline="middle" style="cursor: pointer; cursor: hand; fill: black; stroke: rgb(34, 139, 34); stroke-width: 0.5; font-family: Verdana; font-size: 10px;dominant-baseline: middle; text-anchor: middle">Día</text>
-	<text shape-rendering="geometricPrecision" id="proyecto" x="32" y="30" alignment-baseline="middle" style="cursor: pointer; cursor: hand; fill: black; stroke: rgb(34, 139, 34); stroke-width: 0.5; font-family: Verdana; font-size: 10px;dominant-baseline: middle; text-anchor: middle">1</text>
-	<text shape-rendering="geometricPrecision" id="proyecto" x="32" y="50" alignment-baseline="middle" style="cursor: pointer; cursor: hand; fill: black; stroke: rgb(34, 139, 34); stroke-width: 0.5; font-family: Verdana; font-size: 10px;dominant-baseline: middle; text-anchor: middle">Domingo</text>
+	<text shape-rendering="geometricPrecision" id="dianumero" x="32" y="30" alignment-baseline="middle" style="cursor: pointer; cursor: hand; fill: black; stroke: rgb(34, 139, 34); stroke-width: 0.5; font-family: Verdana; font-size: 10px;dominant-baseline: middle; text-anchor: middle">1</text>
+	<text shape-rendering="geometricPrecision" id="Dia" x="32" y="50" alignment-baseline="middle" style="cursor: pointer; cursor: hand; fill: black; stroke: rgb(34, 139, 34); stroke-width: 0.5; font-family: Verdana; font-size: 10px;dominant-baseline: middle; text-anchor: middle">Domingo</text>
 </svg>
 <svg    id="b7" onclick=""             class="boton" viewBox="0 0 64 64"   style="cursor: pointer;cursor: hand; position: absolute; width: 64px; height: 64px; top: 384px; left: 512px;"></svg>
 <svg    id="b8" onclick="salv4d()"     class="boton" viewBox="0 0 64 64"   style="cursor: pointer;cursor: hand; position: absolute; width: 64px; height: 64px; top: 448px; left: 512px;"></svg>
@@ -53,6 +53,13 @@ var x = 256, y = 256, factorx = 1, factory = 1;
 var xanterior = x, yanterior = y;
 var izquierda = 0, arriba = 0;
 var pruta ="", sty="", styt="";
+var adias = [ 'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+var ameses= ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+var registro = new Date();	
+document.getElementById("Ano").textContent = registro.getFullYear();
+document.getElementById("Mes").textContent = ameses[registro.getMonth()];
+document.getElementById("dianumero").textContent = registro.getDate();
+document.getElementById("Dia").textContent = adias[registro.getDay()];
 var frame4d = document.getElementById('frame4d'); 
 if (window.addEventListener) {
 	window.addEventListener('onload', panel(), false);
