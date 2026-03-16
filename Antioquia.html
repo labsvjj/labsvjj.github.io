@@ -76,9 +76,31 @@ function ventana(ubica){
         const screenY = ((svgY - svgViewBox.y) / svgViewBox.height) * svgRect.height + svgRect.top;
         contenido = elemento.getAttribute('data-contenido');
         document.getElementById("datos").innerHTML = contenido;
-        document.getElementById("datos").style.left = (screenX + 1) + "px";
-        document.getElementById("datos").style.top = (screenY + 1) + "px";
-        document.getElementById("datos").style.display = 'block';
+        
+        const popup = document.getElementById("datos");
+        popup.style.display = 'block';
+        popup.style.position = 'fixed';
+        
+        // Obtener dimensiones del popup
+        const popupWidth = popup.offsetWidth;
+        const popupHeight = popup.offsetHeight;
+        const offset = 10;
+        
+        let posX = screenX + offset;
+        let posY = screenY + offset;
+        
+        // Si está muy a la derecha, mostrar a la izquierda
+        if (posX + popupWidth > window.innerWidth - 10) {
+            posX = screenX - popupWidth - offset;
+        }
+        
+        // Si está muy abajo, mostrar arriba
+        if (posY + popupHeight > window.innerHeight - 10) {
+            posY = screenY - popupHeight - offset;
+        }
+        
+        popup.style.left = Math.max(5, posX) + "px";
+        popup.style.top = Math.max(5, posY) + "px";
     }
 }
 </script>  
