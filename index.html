@@ -64,41 +64,38 @@ document.getElementById("dianumero").textContent = registro.getDate();
 document.getElementById("Dia").textContent = adias[registro.getDay()];
 var frame4d = document.getElementById('frame4d'); 
 if (window.addEventListener) {
-	window.addEventListener('onload', panel(), false);
+	window.addEventListener('onload', COCO(), false);
 } else {
-	window.onload=panel();
+	window.onload=COCO();
 }
-function panel() {
+function COCO() {
 	var ancho = Math.max(document.documentElement.clientWidth,  window.innerWidth) - 4;	
-	var alto  = Math.max(document.documentElement.clientHeight, window.innerHeight)- 4; 	
-	var orientacion = "horizontal";
-	if (ancho > alto) { lado = alto; } else { lado = ancho; orientacion = "vertical"; }	
-	frame4d.setAttribute('style', 'position: absolute; display: block; left: 0px; top: 0px; outline: silver solid 1px; width:' + lado + 'px;height:' + lado + 'px;');
-	var rect = frame4d.getBoundingClientRect();
-	izquierda = rect.left;
-	arriba = rect.top;
-	factorx = 512/rect.width;
-	factory = 512/rect.height;
-	var lado8 = (lado/8);
-	if(orientacion == "horizontal") {
-		document.getElementById("b1").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*0 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-		document.getElementById("b2").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*1 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-		document.getElementById("b3").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*2 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-		document.getElementById("b4").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*3 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-		document.getElementById("b5").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*4 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-		document.getElementById("b6").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*5 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-		document.getElementById("b7").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*6 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-		document.getElementById("b8").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + lado8*7 + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-	} else {
-		document.getElementById("b1").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*0 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-		document.getElementById("b2").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*1 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-		document.getElementById("b3").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*2 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-		document.getElementById("b4").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*3 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-		document.getElementById("b5").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*4 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-		document.getElementById("b6").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*5 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-		document.getElementById("b7").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*6 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-		document.getElementById("b8").setAttribute('style', 'position: absolute; display: block; left: ' + lado8*7 + 'px; top: ' + lado + 'px; width:' + lado8 + 'px;height:' + lado8 + 'px;');
-	}
+	var ancho8 = ancho/8;
+	var alto  = Math.max(document.documentElement.clientHeight, window.innerHeight)- 4;
+	var alto8 = alto/8;
+	if (ancho > alto) { 
+		var lado = ancho - ancho8; 
+		document.getElementById('frame4d').setAttribute('style', 'position: absolute; display: block; left: 0px; top: 0px; outline: silver solid 1px; width:' + lado + 'px;height:' + alto + 'px;');
+		document.getElementById("b1").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + alto8*0 + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+		document.getElementById("b2").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + alto8*1 + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+		document.getElementById("b3").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + alto8*2 + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+		document.getElementById("b4").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + alto8*3 + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+		document.getElementById("b5").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + alto8*4 + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+		document.getElementById("b6").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + alto8*5 + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+		document.getElementById("b7").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + alto8*6 + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+		document.getElementById("b8").setAttribute('style', 'position: absolute; display: block; left: ' + lado + 'px; top: ' + alto8*7 + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+	} else { 
+		var lado = alto - alto8; 
+		document.getElementById('frame4d').setAttribute('style', 'position: absolute; display: block; left: 0px; top: 0px; outline: silver solid 1px; width:' + ancho + 'px;height:' + lado + 'px;');
+		document.getElementById("b1").setAttribute('style', 'position: absolute; display: block; left: ' + ancho8*0 + 'px; top: ' + lado + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+		document.getElementById("b2").setAttribute('style', 'position: absolute; display: block; left: ' + ancho8*1 + 'px; top: ' + lado + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+		document.getElementById("b3").setAttribute('style', 'position: absolute; display: block; left: ' + ancho8*2 + 'px; top: ' + lado + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+		document.getElementById("b4").setAttribute('style', 'position: absolute; display: block; left: ' + ancho8*3 + 'px; top: ' + lado + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+		document.getElementById("b5").setAttribute('style', 'position: absolute; display: block; left: ' + ancho8*4 + 'px; top: ' + lado + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+		document.getElementById("b6").setAttribute('style', 'position: absolute; display: block; left: ' + ancho8*5 + 'px; top: ' + lado + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+		document.getElementById("b7").setAttribute('style', 'position: absolute; display: block; left: ' + ancho8*6 + 'px; top: ' + lado + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+		document.getElementById("b8").setAttribute('style', 'position: absolute; display: block; left: ' + ancho8*7 + 'px; top: ' + lado + 'px; width:' + ancho8 + 'px;height:' + alto8 + 'px;');
+	}	
 }
 </script>  
 </body>

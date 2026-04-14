@@ -85,6 +85,6 @@ function ventana(ubica){
 window.onload=panel();
 function panel() {ancho = Math.max(document.documentElement.clientWidth,  window.innerWidth)-4;	
 alto  = Math.max(document.documentElement.clientHeight, window.innerHeight)-4; 	if (ancho > alto) { lado = alto; } else { lado = ancho; }	
-document.getElementById('mapa').setAttribute('style', 'position: absolute;outline: silver solid 1px; width:' + lado + 'px;height:' + lado + 'px;');}
+document.getElementById('mapa').setAttribute('style', 'position: absolute;outline: silver solid 1px; width:' + ancho + 'px;height:' + alto + 'px;');}
 </script>  
 </body></html>
